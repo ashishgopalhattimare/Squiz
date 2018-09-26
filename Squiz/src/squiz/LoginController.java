@@ -158,7 +158,7 @@ public class LoginController implements Initializable {
             if(dataValidation) {
                 if(LoginUser.studentLogin) { // Student is Login
                     if(SQliteConnection.userExistLogin("STUDENT", username, password)) {
-                        System.out.println("student login access");
+
                         System.out.printf("%s %s\n%s\n\n", SQliteConnection.firstname, SQliteConnection.lastname, SQliteConnection.username);
 
                         login_password.setStyle("-fx-border-color : transparent");
@@ -168,13 +168,13 @@ public class LoginController implements Initializable {
                         transferDetails();
                     }
                     else {
-                        login_password.setStyle("-fx-border-color : #7aa8f4");
-                        login_username.setStyle("-fx-border-color : #7aa8f4");
+                        login_password.setStyle("-fx-border-color : #ff5542");
+                        login_username.setStyle("-fx-border-color : #ff5542");
                     }
                 }
                 else { // Teacher is Signing up
                     if(SQliteConnection.userExistLogin("TEACHER", username, password)) {
-                        System.out.println("teacher login access");
+
                         System.out.printf("%s %s\n%s\n\n", SQliteConnection.firstname, SQliteConnection.lastname, SQliteConnection.username);
 
                         login_password.setStyle("-fx-border-color : transparent");
@@ -184,8 +184,8 @@ public class LoginController implements Initializable {
                         transferDetails();
                     }
                     else {
-                        login_password.setStyle("-fx-border-color : #7aa8f4");
-                        login_username.setStyle("-fx-border-color : #7aa8f4");
+                        login_password.setStyle("-fx-border-color : #ff5542");
+                        login_username.setStyle("-fx-border-color : #ff5542");
                     }
                 }
             }

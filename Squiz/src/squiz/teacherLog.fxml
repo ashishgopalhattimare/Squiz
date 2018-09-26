@@ -9,9 +9,9 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="496.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.181" xmlns:fx="http://javafx.com/fxml/1" fx:controller="squiz.TeacherLogController">
+<AnchorPane maxHeight="500.0" maxWidth="750.0" minHeight="500.0" minWidth="750.0" prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="squiz.TeacherLogController">
     <children>
-      <BorderPane prefHeight="496.0" prefWidth="750.0">
+      <BorderPane minHeight="500.0" minWidth="750.0" prefHeight="500.0" prefWidth="750.0">
          <top>
             <AnchorPane prefHeight="117.0" prefWidth="750.0" BorderPane.alignment="CENTER">
                <children>

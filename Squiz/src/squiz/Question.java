@@ -4,24 +4,12 @@ public class Question {
 
     private String question;
     private int quesType;
-
     private String[] options;
     private int[] answers;
 
     public Question(String question, int quesType, String[] optionAr, int[] answerAr)
     {
-        this.question = question;
-        this.quesType = quesType;
-
-        options = new String[optionAr.length];
-        for(int i = 0; i < optionAr.length; i++) {
-            options[i] = optionAr[i];
-        }
-
-        answers = new int[answerAr.length];
-        for(int i = 0; i < answerAr.length; i++) {
-            answers[i] = answerAr[i];
-        }
+        constructQuestion(question, quesType, optionAr, answerAr);
     }
 
     public String getQuestion() {
@@ -43,6 +31,21 @@ public class Question {
     public String getOptionContent(int index)
     {
         return options[index];
+    }
+
+    public void constructQuestion(String question, int quesType, String[] optionAr, int[] answerAr) {
+        this.question = question;
+        this.quesType = quesType;
+
+        options = new String[optionAr.length];
+        for(int i = 0; i < optionAr.length; i++) {
+            options[i] = optionAr[i];
+        }
+
+        answers = new int[answerAr.length];
+        for(int i = 0; i < answerAr.length; i++) {
+            answers[i] = answerAr[i];
+        }
     }
 
     @Override

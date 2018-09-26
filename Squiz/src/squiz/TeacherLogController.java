@@ -32,6 +32,7 @@ public class TeacherLogController implements Initializable {
                 Parent testView = FXMLLoader.load(getClass().getResource("testLog.fxml"));
                 Scene testScene = new Scene(testView);
 
+                System.out.println("lala");
                 Main.mainStage.setScene(testScene);
                 Main.mainStage.show();
             }

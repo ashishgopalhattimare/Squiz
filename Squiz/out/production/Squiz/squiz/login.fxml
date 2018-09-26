@@ -19,8 +19,8 @@
       <ToggleButton fx:id="signup_botton" layoutX="34.0" layoutY="95.0" mnemonicParsing="false" prefHeight="58.0" prefWidth="206.0" style="-fx-background-radius: 0;" text="SIGNUP" toggleGroup="$toggleGroup" />
       <AnchorPane fx:id="loginPage" layoutX="35.0" layoutY="175.0" opacity="0.0" prefHeight="197.0" prefWidth="410.0">
          <children>
-            <TextField fx:id="login_username" layoutY="57.0" prefHeight="40.0" prefWidth="410.0" promptText="username" style="-fx-background-radius: 0;" />
-            <PasswordField fx:id="login_password" layoutY="115.0" prefHeight="40.0" prefWidth="410.0" promptText="Set A Password" style="-fx-background-radius: 0;" />
+            <TextField fx:id="login_username" layoutY="57.0" prefHeight="40.0" prefWidth="410.0" promptText="username" style="-fx-background-radius: 0;" text="20164173" />
+            <PasswordField fx:id="login_password" layoutY="115.0" prefHeight="40.0" prefWidth="410.0" promptText="Set A Password" style="-fx-background-radius: 0;" text="Ashish-1997" />
             <Button fx:id="login_submit" layoutY="175.0" mnemonicParsing="false" onMouseEntered="#loginMouseEnter" onMouseExited="#loginMouseExit" prefHeight="70.0" prefWidth="410.0" text="SUBMIT" />
          </children>
       </AnchorPane>

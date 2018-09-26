@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class Main extends Application {
 
@@ -16,9 +17,7 @@ public class Main extends Application {
         mainStage = primaryStage;
         try {
             Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
-            primaryStage.setTitle("Squiz");
-//            primaryStage.initStyle(StageStyle.UNDECORATED);
-            primaryStage.setScene(new Scene(root, 600, 400));
+            primaryStage.setScene(new Scene(root,600,400));
             primaryStage.setResizable(false);
             primaryStage.show();
         }

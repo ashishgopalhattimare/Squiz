@@ -59,7 +59,6 @@ public class CreateTestController implements Initializable {
     ObservableList<Label>listView;
 
     private int totalQuestion;
-    private boolean startTestMaking;
     private int currentQuestion;
 
     public ArrayList<Question>questionArrayList;
@@ -87,14 +86,13 @@ public class CreateTestController implements Initializable {
 
         currentQuestion = 1;
         totalQuestion = -1;
-        startTestMaking = false;
 
         numberLabel.setText(Integer.toString(currentQuestion));
 
         listView = FXCollections.observableArrayList();
 
         submitButton.setOnAction(event -> {
-            System.out.println("submit test to database");
+            System.out.println("Current Question : " + currentQuestion);
         });
 
         closeButton.setOnAction(event -> {
@@ -146,25 +144,41 @@ public class CreateTestController implements Initializable {
                     mcqButton.setSelected(false);
                 }
 
-                questionArrayList.add(new Question(questionArea.getText(), quesType, optionArray, answerArray));
+                if(currentQuestion == questionArrayList.size()+1) {
+                    System.out.println("new question");
+
+                    questionArrayList.add(new Question(questionArea.getText(), quesType, optionArray, answerArray));
+
+                    numberLabel.setText(Integer.toString(currentQuestion));
+                    buttonVisibility(false, false, false, false);
+                    questionArea.setText("");
+
+                    FlowPane panel = new FlowPane();
+                    panel.setAlignment(Pos.CENTER);
+                    panel.setMaxWidth(170);
+
+                    Label questionLabel = new Label("Question " + currentQuestion);
+                    panel.getChildren().add(questionLabel);
+
+                    questionList.getItems().add(panel);
+
+                    currentQuestion = questionArrayList.size()+1;
+                }
+                else {
+                    System.out.println("update question");
+
+                    questionArrayList.get(currentQuestion-1).constructQuestion(questionArea.getText(), quesType, optionArray, answerArray);
+
+                    currentQuestion = questionArrayList.size()+1;
+                }
+
+                buttonVisibility(false, false, false, false);
 
                 numberLabel.setText(Integer.toString(currentQuestion));
-                buttonVisibility(false, false, false, false);
-                questionArea.setText("");
 
-                FlowPane panel = new FlowPane();
-                panel.setAlignment(Pos.CENTER);
-                panel.setMaxWidth(170);
-
-                Label questionLabel = new Label("Question " + currentQuestion);
-                panel.getChildren().add(questionLabel);
-
-                questionList.getItems().add(panel);
-
-                currentQuestion++;
             }
             else {
-                System.out.println("please check your data");
+                System.out.println("please CHECK your data");
             }
         });
 
@@ -174,36 +188,41 @@ public class CreateTestController implements Initializable {
                 int index = questionList.getSelectionModel().getSelectedIndex();
                 System.out.println(index);
 
-                buttonVisibility(false, false, false, false);
+                if(index != -1) {
+                    buttonVisibility(false, false, false, false);
 
-                Question quesTemp = questionArrayList.get(index);
+                    Question quesTemp = questionArrayList.get(index);
 
-                questionArea.setText(quesTemp.getQuestion());
+                    currentQuestion = index+1;
+                    numberLabel.setText(Integer.toString(currentQuestion));
 
-                for(int i = 0; i < 2; i++) {
-                    JFXTextArray[i].setText(quesTemp.getOptionContent(i));
-                    JFXTextArray[i].setVisible(true);
-                    JFXOptionArray[i].setVisible(true);
-                }
+                    questionArea.setText(quesTemp.getQuestion());
 
-                if(quesTemp.getQuesType() == 1 || quesTemp.getQuesType() == 3) {
-                    for(int i = 2; i < 4; i++) {
+                    for(int i = 0; i < 2; i++) {
                         JFXTextArray[i].setText(quesTemp.getOptionContent(i));
                         JFXTextArray[i].setVisible(true);
                         JFXOptionArray[i].setVisible(true);
                     }
-                }
 
-                for(int i : quesTemp.getAnswers()) {
-                    JFXOptionArray[i-1].setSelected(true);
-                }
+                    if(quesTemp.getQuesType() == 1 || quesTemp.getQuesType() == 3) {
+                        for(int i = 2; i < 4; i++) {
+                            JFXTextArray[i].setText(quesTemp.getOptionContent(i));
+                            JFXTextArray[i].setVisible(true);
+                            JFXOptionArray[i].setVisible(true);
+                        }
+                    }
 
-                switch (quesTemp.getQuesType()) {
-                    case 1: smcqButton.setSelected(true);
-                        break;
-                    case 2: tfButton.setSelected(true);
-                        break;
-                    case 3: mcqButton.setSelected(true);
+                    for(int i : quesTemp.getAnswers()) {
+                        JFXOptionArray[i-1].setSelected(true);
+                    }
+
+                    switch (quesTemp.getQuesType()) {
+                        case 1: smcqButton.setSelected(true);
+                            break;
+                        case 2: tfButton.setSelected(true);
+                            break;
+                        case 3: mcqButton.setSelected(true);
+                    }
                 }
             }
             catch(Exception e) {}
@@ -219,16 +238,20 @@ public class CreateTestController implements Initializable {
 
     private boolean validateData()
     {
-        int selectedOptions = 0;
+        int selectedOptions;
         if(questionArea.getText().length() > 0) {
 
+            selectedOptions = 0;
             for(int i = 0; i < 4; i++) {
                 if(JFXOptionArray[i].isSelected()) {
                     selectedOptions++;
                 }
             }
 
-            if(selectedOptions == 0) return false;
+            if(selectedOptions == 0) {
+                System.out.println(0);
+                return false;
+            }
 
             answerArray = new int[selectedOptions];
 
@@ -241,24 +264,29 @@ public class CreateTestController implements Initializable {
 
             if(smcqButton.isSelected()) {
                 for(int i = 0; i < 4; i++) {
-                    if(JFXTextArray[i].getText().length() == 0) return false;
+                    if(JFXTextArray[i].getText().length() == 0) {
+                        return false;
+                    }
                 }
                 return (selectedOptions == 1);
             }
             else if(tfButton.isSelected()) {
                 for(int i = 0; i < 2; i++) {
-                    if(JFXTextArray[i].getText().length() == 0) return false;
+                    if(JFXTextArray[i].getText().length() == 0) {
+                        return false;
+                    }
                 }
                 return (selectedOptions == 1);
             }
             else if(mcqButton.isSelected()) {
                 for(int i = 0; i < 4; i++) {
-                    if(JFXTextArray[i].getText().length() == 0) return false;
+                    if(JFXTextArray[i].getText().length() == 0) {
+                        return false;
+                    }
                 }
                 return true;
             }
         }
-
         return false;
     }
 
@@ -285,15 +313,12 @@ public class CreateTestController implements Initializable {
     private void radioSelected(ActionEvent event) {
 
         if(event.getSource() == smcqButton) {
-            resetChoiceButton();
             buttonVisibility(true, true, true, true);
         }
         else if(event.getSource() == mcqButton) {
-            resetChoiceButton();
             buttonVisibility(true, true, true, true);
         }
         else if(event.getSource() == tfButton) {
-            resetChoiceButton();
             buttonVisibility(true, true, false, false);
         }
     }
