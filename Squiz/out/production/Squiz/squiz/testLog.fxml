@@ -32,11 +32,11 @@
                <bottom>
                   <FlowPane alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="583.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Button fx:id="deleteButton" alignment="CENTER" mnemonicParsing="false" prefHeight="37.0" prefWidth="125.0" style="-fx-background-radius: 45;" text="DELETE" />
+                        <Button fx:id="deleteButton" alignment="CENTER" mnemonicParsing="false" prefHeight="37.0" prefWidth="100.0" style="-fx-background-radius: 45;" text="DELETE" />
                         <AnchorPane prefHeight="5.0" prefWidth="5.0" />
-                        <Button fx:id="newButton" alignment="CENTER" mnemonicParsing="false" prefHeight="37.0" prefWidth="125.0" style="-fx-background-radius: 45;" text="NEW QUESTION" />
+                        <Button fx:id="newButton" alignment="CENTER" mnemonicParsing="false" prefHeight="37.0" prefWidth="190.0" style="-fx-background-radius: 45;" text="NEW / MODIFY QUESTION" />
                         <AnchorPane prefHeight="5.0" prefWidth="5.0" />
-                        <Button fx:id="submitButton" alignment="CENTER" mnemonicParsing="false" prefHeight="37.0" prefWidth="99.0" style="-fx-background-radius: 45;" text="SUBMIT" />
+                        <Button fx:id="submitButton" alignment="CENTER" mnemonicParsing="false" prefHeight="37.0" prefWidth="100.0" style="-fx-background-radius: 45;" text="SUBMIT" />
                         <AnchorPane prefHeight="5.0" prefWidth="5.0" />
                      </children>
                   </FlowPane>

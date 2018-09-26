@@ -1,6 +1,13 @@
 package squiz.database;
 
+import squiz.Question;
+import squiz.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class SQliteConnection {
 
@@ -13,7 +20,7 @@ public class SQliteConnection {
     public static Connection connectionCheck() {
         try {
             Class.forName("org.sqlite.JDBC");
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:TEACHER_DATABASE.sqlite");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:TEACHER_DATABASE.db");
             return connection;
         }
         catch (Exception e) {
@@ -22,15 +29,6 @@ public class SQliteConnection {
         }
     }
 
-    /**
-     * In TEACHER and STUDENT table, each has a unique username to access the database
-     * this tablename and the username are enough to get existance validation
-     *
-     * @param TABLE
-     * @param USERNAME
-     *
-     * @return
-     */
     public static boolean userExistSignUp(String TABLE, String USERNAME)
     {
         Connection connection = connectionCheck();
@@ -111,10 +109,16 @@ public class SQliteConnection {
                 int result = st.executeUpdate(query);
 
                 querySuccessful = true;
-                connection.close();
             }
             catch (Exception e) {
                 System.out.println("insert error");
+            }
+            finally {
+                try {
+                    connection.close();
+                } catch(SQLException ex) {
+                    System.out.println("Connection Close Error");
+                }
             }
         }
     }
@@ -136,11 +140,71 @@ public class SQliteConnection {
                 int result = st.executeUpdate(query);
 
                 querySuccessful = true;
-                connection.close();
             }
             catch (Exception e) {
                 System.out.println("update error");
             }
+            finally {
+                try {
+                    connection.close();
+                } catch(SQLException ex) {
+                    System.out.println("Connection Close Error");
+                }
+            }
+        }
+    }
+
+    public static void submitTest(ArrayList<Question>testArray)
+    {
+        try {
+            System.out.println(-2);
+            Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
+            System.out.println(-1);
+            Connection connection = DriverManager.getConnection("jdbc:odbc:TEACHER_DATABASE.db");
+
+            System.out.println(0);
+
+            try {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                ObjectOutputStream oos = new ObjectOutputStream(bos);
+
+                System.out.println(1);
+                Test test = new Test(testArray);
+
+                System.out.println(2);
+                oos.writeObject(test);
+
+                System.out.println(3);
+
+                oos.flush(); oos.close(); bos.close();
+
+                System.out.println(4);
+
+                byte[] databytes = bos.toByteArray();
+
+                String query = "INSERT INTO TEST (QUIZPAPER) VALUES (?)";
+                PreparedStatement ps = connection.prepareStatement(query);
+
+                ByteArrayInputStream bais = new ByteArrayInputStream(databytes);
+                ps.setBinaryStream(1, bais, databytes.length);
+                ps.executeUpdate();
+                ps.close();
+            }
+            catch(Exception e) {
+                System.out.println("Submit Test Error");
+            }
+            finally {
+                try {
+                    connection.close();
+                } catch(SQLException ex) {
+                    System.out.println("Connection Close Error");
+                    ex.printStackTrace();
+                }
+            }
+        }
+        catch (Exception e) {
+            System.out.println("connection error submit");
+            e.printStackTrace();
         }
     }
 }

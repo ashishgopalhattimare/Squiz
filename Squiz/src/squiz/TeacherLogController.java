@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.stage.StageStyle;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -16,13 +17,13 @@ public class TeacherLogController implements Initializable {
 
     @FXML private Button addTestButton;
     @FXML private Button openTestButton;
-    @FXML private Label teacherNameLabel;
 
     @FXML public JFXListView<Label> listView;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        System.out.println("Initialize");
         openTestButton.setOnAction(event -> {
             System.out.println("open this test");
         });
@@ -30,14 +31,11 @@ public class TeacherLogController implements Initializable {
         addTestButton.setOnAction(event -> {
             try {
                 Parent testView = FXMLLoader.load(getClass().getResource("testLog.fxml"));
-                Scene testScene = new Scene(testView);
-
-                System.out.println("lala");
-                Main.mainStage.setScene(testScene);
+                Main.mainStage.setScene(new Scene(testView));
                 Main.mainStage.show();
             }
             catch(Exception e) {
-                System.out.println("text not opening");
+                System.out.println("ADD NEW TEST TO TEACHER TABLE");
             }
         });
     }

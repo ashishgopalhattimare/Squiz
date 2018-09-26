@@ -1,8 +1,6 @@
 package squiz.test;
 
 import com.jfoenix.controls.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,8 +19,6 @@ import squiz.Question;
 import squiz.database.SQliteConnection;
 
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -33,10 +29,9 @@ public class CreateTestController implements Initializable {
     @FXML private Button newButton;
     @FXML private Button submitButton;
     @FXML private Button closeButton;
+    @FXML private Button deleteButton;
 
     @FXML private JFXButton accessButton;
-
-    @FXML private ToggleGroup choiceGroup;
 
     @FXML private Label numberLabel;
 
@@ -56,12 +51,11 @@ public class CreateTestController implements Initializable {
     @FXML private JFXTextField option3Text;
     @FXML private JFXTextField option4Text;
 
-    ObservableList<Label>listView;
-
-    private int totalQuestion;
     private int currentQuestion;
+    private int preType,curType;
 
     public ArrayList<Question>questionArrayList;
+    public ArrayList<Label>questionLabelList;
 
     public String[] optionArray;
     public int[] answerArray;
@@ -70,7 +64,8 @@ public class CreateTestController implements Initializable {
     private JFXTextField[] JFXTextArray = new JFXTextField[4];
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(URL location, ResourceBundle resources)
+    {
 
         JFXOptionArray[0] = option1Button;
         JFXOptionArray[1] = option2Button;
@@ -83,17 +78,15 @@ public class CreateTestController implements Initializable {
         JFXTextArray[3] = option4Text;
 
         questionArrayList = new ArrayList<>();
+        questionLabelList = new ArrayList<>();
 
         currentQuestion = 1;
-        totalQuestion = -1;
+        preType = -1;
+        curType = -1;
 
         numberLabel.setText(Integer.toString(currentQuestion));
 
-        listView = FXCollections.observableArrayList();
-
-        submitButton.setOnAction(event -> {
-            System.out.println("Current Question : " + currentQuestion);
-        });
+        submitButton.setOnAction(this::submitEventHandler);
 
         closeButton.setOnAction(event -> {
             try {
@@ -108,132 +101,49 @@ public class CreateTestController implements Initializable {
             }
         });
 
-        newButton.setOnAction(event -> {
-            if(validateData()) {
+        newButton.setOnAction(this::newModifyQuestion);
 
-                int quesType = 0;
+        accessButton.setOnAction(this::getQuestionAcess);
 
-                if(smcqButton.isSelected()) {
-                    quesType = 1;
-                    optionArray = new String[4];
-
-                    for(int i = 0; i < 4; i++) {
-                        optionArray[i] = JFXTextArray[i].getText();
-                    }
-
-                    smcqButton.setSelected(false);
-                }
-                else if(tfButton.isSelected()) {
-                    quesType = 2;
-                    optionArray = new String[2];
-
-                    for(int i = 0; i < 2; i++) {
-                        optionArray[i] = JFXTextArray[i].getText();
-                    }
-
-                    tfButton.setSelected(false);
-                }
-                else if(mcqButton.isSelected()) {
-                    quesType = 3;
-                    optionArray = new String[4];
-
-                    for(int i = 0; i < 4; i++) {
-                        optionArray[i] = JFXTextArray[i].getText();
-                    }
-
-                    mcqButton.setSelected(false);
-                }
-
-                if(currentQuestion == questionArrayList.size()+1) {
-                    System.out.println("new question");
-
-                    questionArrayList.add(new Question(questionArea.getText(), quesType, optionArray, answerArray));
-
-                    numberLabel.setText(Integer.toString(currentQuestion));
-                    buttonVisibility(false, false, false, false);
-                    questionArea.setText("");
-
-                    FlowPane panel = new FlowPane();
-                    panel.setAlignment(Pos.CENTER);
-                    panel.setMaxWidth(170);
-
-                    Label questionLabel = new Label("Question " + currentQuestion);
-                    panel.getChildren().add(questionLabel);
-
-                    questionList.getItems().add(panel);
-
-                    currentQuestion = questionArrayList.size()+1;
-                }
-                else {
-                    System.out.println("update question");
-
-                    questionArrayList.get(currentQuestion-1).constructQuestion(questionArea.getText(), quesType, optionArray, answerArray);
-
-                    currentQuestion = questionArrayList.size()+1;
-                }
-
-                buttonVisibility(false, false, false, false);
-
-                numberLabel.setText(Integer.toString(currentQuestion));
-
-            }
-            else {
-                System.out.println("please CHECK your data");
-            }
-        });
-
-        accessButton.setOnAction(event -> {
-
-            try {
-                int index = questionList.getSelectionModel().getSelectedIndex();
-                System.out.println(index);
-
-                if(index != -1) {
-                    buttonVisibility(false, false, false, false);
-
-                    Question quesTemp = questionArrayList.get(index);
-
-                    currentQuestion = index+1;
-                    numberLabel.setText(Integer.toString(currentQuestion));
-
-                    questionArea.setText(quesTemp.getQuestion());
-
-                    for(int i = 0; i < 2; i++) {
-                        JFXTextArray[i].setText(quesTemp.getOptionContent(i));
-                        JFXTextArray[i].setVisible(true);
-                        JFXOptionArray[i].setVisible(true);
-                    }
-
-                    if(quesTemp.getQuesType() == 1 || quesTemp.getQuesType() == 3) {
-                        for(int i = 2; i < 4; i++) {
-                            JFXTextArray[i].setText(quesTemp.getOptionContent(i));
-                            JFXTextArray[i].setVisible(true);
-                            JFXOptionArray[i].setVisible(true);
-                        }
-                    }
-
-                    for(int i : quesTemp.getAnswers()) {
-                        JFXOptionArray[i-1].setSelected(true);
-                    }
-
-                    switch (quesTemp.getQuesType()) {
-                        case 1: smcqButton.setSelected(true);
-                            break;
-                        case 2: tfButton.setSelected(true);
-                            break;
-                        case 3: mcqButton.setSelected(true);
-                    }
-                }
-            }
-            catch(Exception e) {}
-        });
+        deleteButton.setOnAction(this::deleteQuestion);
 
         smcqButton.setOnAction(this::radioSelected);
         mcqButton.setOnAction(this::radioSelected);
         tfButton.setOnAction(this::radioSelected);
 
         buttonVisibility(false, false, false, false);
+        resetChoiceButton();
+        resetTextField();
 
+    }
+
+    private void submitEventHandler(ActionEvent event)
+    {
+        for(Question question : questionArrayList) {
+            System.out.println(question);
+        }
+
+        if(questionArrayList.size() > 0) {
+            SQliteConnection.submitTest(questionArrayList);
+        }
+    }
+
+    private void deleteQuestion(ActionEvent actionEvent)
+    {
+        int index = questionList.getSelectionModel().getSelectedIndex();
+
+        if(index != -1) {
+
+            questionList.getItems().remove(index);
+            questionLabelList.remove(index);
+            questionArrayList.remove(index);
+
+            currentQuestion--;
+
+            for (int i = 0; i < questionLabelList.size(); i++) {
+                questionLabelList.get(i).setText("Question " + (i+1));
+            }
+        }
     }
 
     private boolean validateData()
@@ -297,6 +207,12 @@ public class CreateTestController implements Initializable {
         }
     }
 
+    private void resetTextField() {
+        for(int i = 0; i < 4; i++) {
+            JFXTextArray[i].setText("");
+        }
+    }
+
     private void buttonVisibility(boolean option1, boolean option2, boolean option3, boolean option4)
     {
         boolean[] visibleArray = {option1, option2, option3, option4};
@@ -304,26 +220,160 @@ public class CreateTestController implements Initializable {
         for(int i = 0; i < 4; i++) {
             JFXOptionArray[i].setVisible(visibleArray[i]);
             JFXTextArray[i].setVisible(visibleArray[i]);
-            JFXTextArray[i].setText("");
         }
-
-        resetChoiceButton();
     }
 
-    private void radioSelected(ActionEvent event) {
-
+    private void radioSelected(ActionEvent event)
+    {
+        preType = curType;
         if(event.getSource() == smcqButton) {
+
+            curType = 1;
             buttonVisibility(true, true, true, true);
-        }
-        else if(event.getSource() == mcqButton) {
-            buttonVisibility(true, true, true, true);
+
+            if(preType != 3) resetTextField();
+            resetChoiceButton();
         }
         else if(event.getSource() == tfButton) {
+
+            curType = 2;
             buttonVisibility(true, true, false, false);
+            resetTextField();
+            resetChoiceButton();
+        }
+        else if(event.getSource() == mcqButton) {
+
+            curType = 3;
+            buttonVisibility(true, true, true, true);
+
+            if(preType != 1) resetTextField();
+            resetChoiceButton();
+        }
+
+    }
+
+    private void getQuestionAcess(ActionEvent event)
+    {
+        try {
+            int index = questionList.getSelectionModel().getSelectedIndex();
+
+            if (index != -1) {
+                buttonVisibility(false, false, false, false);
+                resetChoiceButton();
+                resetTextField();
+
+                Question quesTemp = questionArrayList.get(index);
+
+                currentQuestion = index + 1;
+                numberLabel.setText(Integer.toString(currentQuestion));
+
+                questionArea.setText(quesTemp.getQuestion());
+
+                for (int i = 0; i < 2; i++) {
+                    JFXTextArray[i].setText(quesTemp.getOptionContent(i));
+                    JFXTextArray[i].setVisible(true);
+                    JFXOptionArray[i].setVisible(true);
+                }
+
+                if (quesTemp.getQuesType() == 1 || quesTemp.getQuesType() == 3) {
+                    for (int i = 2; i < 4; i++) {
+                        JFXTextArray[i].setText(quesTemp.getOptionContent(i));
+                        JFXTextArray[i].setVisible(true);
+                        JFXOptionArray[i].setVisible(true);
+                    }
+                }
+
+                for (int i : quesTemp.getAnswers()) {
+                    JFXOptionArray[i - 1].setSelected(true);
+                }
+
+                switch (quesTemp.getQuesType()) {
+                    case 1:
+                        smcqButton.setSelected(true);
+                        break;
+                    case 2:
+                        tfButton.setSelected(true);
+                        break;
+                    case 3:
+                        mcqButton.setSelected(true);
+                }
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Question Access Error");
         }
     }
 
-    public int getTotalQuestion() {
-        return totalQuestion;
+    private void newModifyQuestion(ActionEvent event)
+    {
+        if (validateData()) {
+
+            if (smcqButton.isSelected()) {
+                curType = 1;
+                optionArray = new String[4];
+
+                for (int i = 0; i < 4; i++) {
+                    optionArray[i] = JFXTextArray[i].getText();
+                }
+
+                smcqButton.setSelected(false);
+            }
+            else if (tfButton.isSelected()) {
+                curType = 2;
+                optionArray = new String[2];
+
+                for (int i = 0; i < 2; i++) {
+                    optionArray[i] = JFXTextArray[i].getText();
+                }
+
+                tfButton.setSelected(false);
+            }
+            else if (mcqButton.isSelected()) {
+                curType = 3;
+                optionArray = new String[4];
+
+                for (int i = 0; i < 4; i++) {
+                    optionArray[i] = JFXTextArray[i].getText();
+                }
+
+                mcqButton.setSelected(false);
+            }
+
+            if (currentQuestion == questionArrayList.size() + 1) {
+                System.out.println("new question");
+
+                questionArrayList.add(new Question(questionArea.getText(), curType, optionArray, answerArray));
+
+                numberLabel.setText(Integer.toString(currentQuestion));
+                buttonVisibility(false, false, false, false);
+                questionArea.setText("");
+
+                FlowPane panel = new FlowPane();
+                panel.setAlignment(Pos.CENTER);
+                panel.setMaxWidth(170);
+
+                Label questionLabel = new Label("Question " + currentQuestion);
+                panel.getChildren().add(questionLabel);
+
+                questionLabelList.add(questionLabel);
+                questionList.getItems().add(panel);
+
+                currentQuestion = questionArrayList.size() + 1;
+            } else {
+                System.out.println("update question");
+
+                questionArrayList.get(currentQuestion - 1).constructQuestion(questionArea.getText(), curType, optionArray, answerArray);
+                currentQuestion = questionArrayList.size() + 1;
+            }
+
+            buttonVisibility(false, false, false, false);
+            resetChoiceButton();
+            resetTextField();
+
+            numberLabel.setText(Integer.toString(currentQuestion));
+
+        } else {
+            System.out.println("please CHECK your data");
+        }
     }
 }
