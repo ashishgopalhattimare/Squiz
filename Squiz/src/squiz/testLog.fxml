@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="642.0" prefWidth="1021.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="squiz.test.CreateTestController">
+   <children>
+      <BorderPane prefHeight="642.0" prefWidth="1021.0">
+         <left>
+            <VBox prefHeight="642.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <children>
+                  <JFXListView fx:id="questionList" prefHeight="590.0" prefWidth="200.0" style="-fx-border-color: #ffffff;" />
+                  <JFXButton fx:id="accessButton" prefHeight="47.0" prefWidth="200.0" text="ACCESS QUESTION" />
+                  <AnchorPane prefHeight="5.0" prefWidth="200.0" style="-fx-background-color: #ffffff;" />
+               </children>
+            </VBox>
+         </left>
+         <center>
+            <BorderPane fx:id="questionWindow" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
+               <bottom>
+                  <FlowPane alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="583.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Button fx:id="newButton" alignment="CENTER" mnemonicParsing="false" prefHeight="37.0" prefWidth="125.0" style="-fx-background-radius: 45;" text="NEW QUESTION" />
+                        <AnchorPane prefHeight="5.0" prefWidth="5.0" />
+                        <Button fx:id="submitButton" alignment="CENTER" mnemonicParsing="false" prefHeight="37.0" prefWidth="99.0" style="-fx-background-radius: 45;" text="SUBMIT" />
+                        <AnchorPane prefHeight="5.0" prefWidth="5.0" />
+                     </children>
+                  </FlowPane>
+               </bottom>
+               <top>
+                  <VBox prefHeight="66.0" prefWidth="583.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <FlowPane alignment="CENTER_RIGHT" columnHalignment="CENTER" prefHeight="40.0" prefWidth="583.0">
+                           <children>
+                              <Button fx:id="closeButton" mnemonicParsing="false" prefHeight="13.0" prefWidth="15.0" style="-fx-background-radius: 45;" text="X">
+                                 <font>
+                                    <Font name="Cantarell Bold" size="13.0" />
+                                 </font>
+                              </Button>
+                              <AnchorPane prefHeight="5.0" prefWidth="5.0" />
+                           </children>
+                        </FlowPane>
+                        <FlowPane prefHeight="25.0" prefWidth="583.0">
+                           <children>
+                              <AnchorPane prefHeight="20.0" prefWidth="5.0" />
+                              <Label alignment="BOTTOM_LEFT" contentDisplay="BOTTOM" prefHeight="20.0" prefWidth="88.0" text="QUESTION">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="numberLabel" prefHeight="19.0" prefWidth="50.0" text="01">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </FlowPane>
+                        <Line endX="810.0" stroke="#979797" />
+                     </children>
+                  </VBox>
+               </top>
+               <center>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <JFXTextArea fx:id="questionArea" focusColor="BLACK" layoutX="6.0" layoutY="7.0" prefHeight="251.0" prefWidth="811.0" promptText="Enter your question here" unFocusColor="BLACK">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </JFXTextArea>
+                        <BorderPane layoutX="6.0" layoutY="263.0" prefHeight="257.0" prefWidth="811.0" style="-fx-background-color: #ffffff;">
+                           <right>
+                              <VBox prefHeight="257.0" prefWidth="245.0" style="-fx-border-color: #ffffff;" BorderPane.alignment="CENTER">
+                                 <children>
+                                    <AnchorPane prefHeight="11.0" prefWidth="200.0" />
+                                    <JFXRadioButton fx:id="smcqButton" text="Single Multiple Choice Question">
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="choiceGroup" />
+                                       </toggleGroup>
+                                    </JFXRadioButton>
+                                    <AnchorPane prefHeight="11.0" prefWidth="200.0" />
+                                    <JFXRadioButton fx:id="tfButton" text="True / False" toggleGroup="$choiceGroup" />
+                                    <AnchorPane prefHeight="11.0" prefWidth="200.0" />
+                                    <JFXRadioButton fx:id="mcqButton" text="Mutiple Choice Question" toggleGroup="$choiceGroup" />
+                                 </children>
+                              </VBox>
+                           </right>
+                           <center>
+                              <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                 <right>
+                                    <AnchorPane prefHeight="200.0" prefWidth="10.0" BorderPane.alignment="CENTER" />
+                                 </right>
+                                 <center>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
+                                       <children>
+                                          <FlowPane alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="556.0">
+                                             <children>
+                                                <JFXRadioButton fx:id="option1Button" text=" " />
+                                                <JFXTextField fx:id="option1Text" focusColor="WHITE" prefHeight="30.0" prefWidth="520.0" promptText="Option 1" unFocusColor="WHITE" />
+                                             </children>
+                                          </FlowPane>
+                                          <FlowPane alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="556.0">
+                                             <children>
+                                                <JFXRadioButton fx:id="option2Button" text=" " />
+                                                <JFXTextField fx:id="option2Text" focusColor="WHITE" prefHeight="30.0" prefWidth="520.0" promptText="Option 2" unFocusColor="WHITE" />
+                                             </children>
+                                          </FlowPane>
+                                          <FlowPane alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="556.0">
+                                             <children>
+                                                <JFXRadioButton fx:id="option3Button" text=" " />
+                                                <JFXTextField fx:id="option3Text" focusColor="WHITE" prefHeight="30.0" prefWidth="520.0" promptText="Option 3" unFocusColor="WHITE" />
+                                             </children>
+                                          </FlowPane>
+                                          <FlowPane alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="556.0">
+                                             <children>
+                                                <JFXRadioButton fx:id="option4Button" text=" " />
+                                                <JFXTextField fx:id="option4Text" focusColor="WHITE" prefHeight="30.0" prefWidth="520.0" promptText="Option 4" unFocusColor="WHITE" />
+                                             </children>
+                                          </FlowPane>
+                                       </children>
+                                    </VBox>
+                                 </center>
+                              </BorderPane>
+                           </center>
+                        </BorderPane>
+                     </children>
+                  </AnchorPane>
+               </center>
+            </BorderPane>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>

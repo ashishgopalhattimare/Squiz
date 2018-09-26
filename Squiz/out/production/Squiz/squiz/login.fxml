@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="447.0" prefWidth="480.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="squiz.LoginController">
+   <children>
+      <ToggleButton fx:id="login_button" layoutX="240.0" layoutY="95.0" mnemonicParsing="false" prefHeight="58.0" prefWidth="206.0" style="-fx-background-radius: 0;" text="LOGIN">
+         <toggleGroup>
+            <ToggleGroup fx:id="toggleGroup" />
+         </toggleGroup>
+      </ToggleButton>
+      <ToggleButton fx:id="signup_botton" layoutX="34.0" layoutY="95.0" mnemonicParsing="false" prefHeight="58.0" prefWidth="206.0" style="-fx-background-radius: 0;" text="SIGNUP" toggleGroup="$toggleGroup" />
+      <AnchorPane fx:id="loginPage" layoutX="35.0" layoutY="175.0" opacity="0.0" prefHeight="197.0" prefWidth="410.0">
+         <children>
+            <TextField fx:id="login_username" layoutY="57.0" prefHeight="40.0" prefWidth="410.0" promptText="username" style="-fx-background-radius: 0;" />
+            <PasswordField fx:id="login_password" layoutY="115.0" prefHeight="40.0" prefWidth="410.0" promptText="Set A Password" style="-fx-background-radius: 0;" />
+            <Button fx:id="login_submit" layoutY="175.0" mnemonicParsing="false" onMouseEntered="#loginMouseEnter" onMouseExited="#loginMouseExit" prefHeight="70.0" prefWidth="410.0" text="SUBMIT" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="signupPage" layoutX="35.0" layoutY="175.0" prefHeight="197.0" prefWidth="410.0">
+         <children>
+            <TextField fx:id="signup_firstname" prefHeight="40.0" prefWidth="194.0" promptText="First Name" style="-fx-background-radius: 0;" />
+            <TextField fx:id="signup_lastname" layoutX="216.0" prefHeight="40.0" prefWidth="194.0" promptText="Last Name" style="-fx-background-radius: 0;" />
+            <TextField fx:id="signup_email" layoutY="57.0" prefHeight="40.0" prefWidth="410.0" promptText="Email Address" style="-fx-background-radius: 0;" />
+            <TextField fx:id="signup_username" layoutY="115.0" prefHeight="40.0" prefWidth="194.0" promptText="username" style="-fx-background-radius: 0;" />
+            <PasswordField fx:id="signup_password" layoutX="216.0" layoutY="115.0" prefHeight="40.0" prefWidth="194.0" promptText="Set A Password" style="-fx-background-radius: 0;" />
+            <Button fx:id="signup_submit" layoutY="175.0" mnemonicParsing="false" onMouseEntered="#signupMouseEnter" onMouseExited="#signupMouseExit" prefHeight="70.0" prefWidth="410.0" text="SUBMIT" />
+         </children>
+      </AnchorPane>
+      <Label fx:id="portalLabel" alignment="CENTER" layoutX="35.0" layoutY="22.0" prefHeight="45.0" prefWidth="410.0" text="STUDENT PORTAL" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font name="DejaVu Serif Condensed Bold" size="28.0" />
+         </font>
+      </Label>
+      <Button fx:id="backButton" layoutX="443.0" layoutY="10.0" mnemonicParsing="false" style="-fx-background-radius: 45;" text="X">
+         <font>
+            <Font name="Bitstream Vera Sans" size="13.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

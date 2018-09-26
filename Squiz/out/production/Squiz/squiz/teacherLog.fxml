@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXListView?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="496.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.181" xmlns:fx="http://javafx.com/fxml/1" fx:controller="squiz.TeacherLogController">
+    <children>
+      <BorderPane prefHeight="496.0" prefWidth="750.0">
+         <top>
+            <AnchorPane prefHeight="117.0" prefWidth="750.0" BorderPane.alignment="CENTER">
+               <children>
+                  <ImageView fitHeight="95.0" fitWidth="95.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/clientIcon.png" />
+                     </image>
+                  </ImageView>
+                  <Label fx:id="teacherNameLabel" layoutX="116.0" layoutY="10.0" prefHeight="48.0" prefWidth="433.0" text="Ashish Gopal Hattimare">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </top>
+         <center>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <children>
+                  <BorderPane layoutX="9.0" layoutY="11.0" prefHeight="359.0" prefWidth="432.0">
+                     <center>
+                        <JFXListView fx:id="listView" BorderPane.alignment="CENTER" />
+                     </center>
+                  </BorderPane>
+                  <Button fx:id="addTestButton" layoutX="451.0" layoutY="11.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" text="+" />
+                  <Button fx:id="openTestButton" layoutX="451.0" layoutY="73.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" text="-" />
+               </children>
+            </AnchorPane>
+         </center>
+      </BorderPane>
+    </children>
+</AnchorPane>
