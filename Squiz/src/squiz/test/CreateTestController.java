@@ -12,6 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.FlowPane;
 import squiz.Main;
@@ -36,6 +37,7 @@ public class CreateTestController implements Initializable {
     @FXML private Label numberLabel;
 
     @FXML private JFXTextArea questionArea;
+    @FXML private TextField subjectField;
 
     @FXML private JFXRadioButton smcqButton;
     @FXML private JFXRadioButton tfButton;
@@ -89,21 +91,12 @@ public class CreateTestController implements Initializable {
         submitButton.setOnAction(this::submitEventHandler);
 
         closeButton.setOnAction(event -> {
-            try {
-                Parent testView = FXMLLoader.load(getClass().getResource("/squiz/teacherLog.fxml"));
-                Scene testScene = new Scene(testView);
-
-                Main.mainStage.setScene(testScene);
-                Main.mainStage.show();
-            }
-            catch(Exception e) {
-                System.out.println("text not opening");
-            }
+            teacherLog();
         });
 
         newButton.setOnAction(this::newModifyQuestion);
 
-        accessButton.setOnAction(this::getQuestionAcess);
+        accessButton.setOnAction(this::getQuestionAccess);
 
         deleteButton.setOnAction(this::deleteQuestion);
 
@@ -117,14 +110,28 @@ public class CreateTestController implements Initializable {
 
     }
 
+    private void teacherLog()
+    {
+        try {
+            Parent testView = FXMLLoader.load(getClass().getResource("/squiz/teacherLog.fxml"));
+            Scene testScene = new Scene(testView);
+
+            Main.mainStage.setScene(testScene);
+            Main.mainStage.show();
+        }
+        catch(Exception e) {
+            System.out.println("text not opening");
+        }
+    }
+
     private void submitEventHandler(ActionEvent event)
     {
-        for(Question question : questionArrayList) {
-            System.out.println(question);
-        }
-
         if(questionArrayList.size() > 0) {
             SQliteConnection.submitTest(questionArrayList);
+
+            if(SQliteConnection.querySuccessful) {
+                teacherLog();
+            }
         }
     }
 
@@ -207,7 +214,8 @@ public class CreateTestController implements Initializable {
         }
     }
 
-    private void resetTextField() {
+    private void resetTextField()
+    {
         for(int i = 0; i < 4; i++) {
             JFXTextArray[i].setText("");
         }
@@ -252,7 +260,7 @@ public class CreateTestController implements Initializable {
 
     }
 
-    private void getQuestionAcess(ActionEvent event)
+    private void getQuestionAccess(ActionEvent event)
     {
         try {
             int index = questionList.getSelectionModel().getSelectedIndex();
@@ -297,6 +305,8 @@ public class CreateTestController implements Initializable {
                     case 3:
                         mcqButton.setSelected(true);
                 }
+
+                questionList.getSelectionModel().clearSelection();
             }
         }
         catch (Exception e) {
@@ -340,13 +350,10 @@ public class CreateTestController implements Initializable {
             }
 
             if (currentQuestion == questionArrayList.size() + 1) {
-                System.out.println("new question");
 
                 questionArrayList.add(new Question(questionArea.getText(), curType, optionArray, answerArray));
 
                 numberLabel.setText(Integer.toString(currentQuestion));
-                buttonVisibility(false, false, false, false);
-                questionArea.setText("");
 
                 FlowPane panel = new FlowPane();
                 panel.setAlignment(Pos.CENTER);
@@ -359,12 +366,14 @@ public class CreateTestController implements Initializable {
                 questionList.getItems().add(panel);
 
                 currentQuestion = questionArrayList.size() + 1;
-            } else {
-                System.out.println("update question");
-
+            }
+            else {
                 questionArrayList.get(currentQuestion - 1).constructQuestion(questionArea.getText(), curType, optionArray, answerArray);
                 currentQuestion = questionArrayList.size() + 1;
             }
+
+            questionArea.setText("");
+            questionList.getSelectionModel().clearSelection();
 
             buttonVisibility(false, false, false, false);
             resetChoiceButton();

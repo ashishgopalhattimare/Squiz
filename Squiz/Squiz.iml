@@ -54,5 +54,15 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/UCanAccess-4.0.4" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/UCanAccess-4.0.4" recursive="false" />
+      </library>
+    </orderEntry>
   </component>
 </module>

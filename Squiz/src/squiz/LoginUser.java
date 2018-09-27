@@ -40,7 +40,7 @@ public class LoginUser {
                     try {
                         Parent teacherView = FXMLLoader.load(getClass().getResource("teacherLog.fxml"));
                         Main.mainStage.setScene(new Scene(teacherView));
-                        Main.mainStage.show();
+                        Main.mainStage.showAndWait();
                     }
                     catch(Exception e) {}
                 }

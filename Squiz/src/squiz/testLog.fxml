@@ -5,8 +5,10 @@
 <?import com.jfoenix.controls.JFXRadioButton?>
 <?import com.jfoenix.controls.JFXTextArea?>
 <?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -42,18 +44,28 @@
                   </FlowPane>
                </bottom>
                <top>
-                  <VBox prefHeight="66.0" prefWidth="583.0" BorderPane.alignment="CENTER">
+                  <VBox prefHeight="72.0" prefWidth="821.0" BorderPane.alignment="CENTER">
                      <children>
-                        <FlowPane alignment="CENTER_RIGHT" columnHalignment="CENTER" prefHeight="40.0" prefWidth="583.0">
-                           <children>
-                              <Button fx:id="closeButton" mnemonicParsing="false" prefHeight="13.0" prefWidth="15.0" style="-fx-background-radius: 45;" text="X">
-                                 <font>
-                                    <Font name="Cantarell Bold" size="13.0" />
-                                 </font>
-                              </Button>
-                              <AnchorPane prefHeight="5.0" prefWidth="5.0" />
-                           </children>
-                        </FlowPane>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0">
+                           <left>
+                              <TextField fx:id="subjectField" prefHeight="32.0" prefWidth="589.0" promptText="ENTER YOUR SUBJECT" style="-fx-background-radius: 45;" BorderPane.alignment="CENTER" />
+                           </left>
+                           <right>
+                              <FlowPane alignment="CENTER_RIGHT" columnHalignment="CENTER" prefHeight="40.0" prefWidth="155.0" BorderPane.alignment="CENTER">
+                                 <children>
+                                    <Button fx:id="closeButton" mnemonicParsing="false" prefHeight="13.0" prefWidth="15.0" style="-fx-background-radius: 45;" text="X">
+                                       <font>
+                                          <Font name="Cantarell Bold" size="13.0" />
+                                       </font>
+                                    </Button>
+                                    <AnchorPane prefHeight="5.0" prefWidth="10.0" />
+                                 </children>
+                              </FlowPane>
+                           </right>
+                           <VBox.margin>
+                              <Insets top="5.0" />
+                           </VBox.margin>
+                        </BorderPane>
                         <FlowPane prefHeight="25.0" prefWidth="583.0">
                            <children>
                               <AnchorPane prefHeight="20.0" prefWidth="5.0" />
@@ -68,15 +80,21 @@
                                  </font>
                               </Label>
                            </children>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
                         </FlowPane>
-                        <Line endX="810.0" stroke="#979797" />
+                        <Line endX="810.0" stroke="#979797">
+                           <VBox.margin>
+                              <Insets top="5.0" />
+                           </VBox.margin></Line>
                      </children>
                   </VBox>
                </top>
                <center>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                      <children>
-                        <JFXTextArea fx:id="questionArea" focusColor="BLACK" layoutX="6.0" layoutY="7.0" prefHeight="251.0" prefWidth="811.0" promptText="Enter your question here" unFocusColor="BLACK">
+                        <JFXTextArea fx:id="questionArea" focusColor="BLACK" layoutX="6.0" layoutY="7.0" prefHeight="242.0" prefWidth="811.0" promptText="Enter your question here" unFocusColor="BLACK">
                            <font>
                               <Font size="14.0" />
                            </font>
@@ -104,7 +122,7 @@
                                     <AnchorPane prefHeight="200.0" prefWidth="10.0" BorderPane.alignment="CENTER" />
                                  </right>
                                  <center>
-                                    <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
+                                    <VBox prefHeight="242.0" prefWidth="556.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
                                        <children>
                                           <FlowPane alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="556.0">
                                              <children>

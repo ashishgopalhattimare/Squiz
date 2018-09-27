@@ -1,11 +1,9 @@
 package squiz.database;
 
+import squiz.LoginUser;
 import squiz.Question;
-import squiz.Test;
+import squiz.TestBuilder;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -129,7 +127,7 @@ public class SQliteConnection {
 
         String query = "UPDATE "+TABLE+" SET SIGNEDIN = "+SIGNAL+" WHERE USERNAME = '"+username+"'";
 
-        System.out.println(query);
+//        System.out.println(query);
         Connection connection = connectionCheck();
 
         querySuccessful = false;
@@ -156,55 +154,14 @@ public class SQliteConnection {
 
     public static void submitTest(ArrayList<Question>testArray)
     {
-        try {
-            System.out.println(-2);
-            Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-            System.out.println(-1);
-            Connection connection = DriverManager.getConnection("jdbc:odbc:TEACHER_DATABASE.db");
+        querySuccessful = false;
 
-            System.out.println(0);
+        TestBuilder test = new TestBuilder();
+        int totalQuestions = test.setTestTable(testArray);
 
-            try {
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                ObjectOutputStream oos = new ObjectOutputStream(bos);
+        String query = "INSERT INTO TEST (COORDINATOR,QUIZPAPER,QUESTIONS,SUBJECT,OPEN) VALUES ('"+LoginUser.username+"','"+test.getTestTable()+"',"+totalQuestions+",'"+"General Quiz"+"',"+1+")";
+        insertQuery(query);
 
-                System.out.println(1);
-                Test test = new Test(testArray);
-
-                System.out.println(2);
-                oos.writeObject(test);
-
-                System.out.println(3);
-
-                oos.flush(); oos.close(); bos.close();
-
-                System.out.println(4);
-
-                byte[] databytes = bos.toByteArray();
-
-                String query = "INSERT INTO TEST (QUIZPAPER) VALUES (?)";
-                PreparedStatement ps = connection.prepareStatement(query);
-
-                ByteArrayInputStream bais = new ByteArrayInputStream(databytes);
-                ps.setBinaryStream(1, bais, databytes.length);
-                ps.executeUpdate();
-                ps.close();
-            }
-            catch(Exception e) {
-                System.out.println("Submit Test Error");
-            }
-            finally {
-                try {
-                    connection.close();
-                } catch(SQLException ex) {
-                    System.out.println("Connection Close Error");
-                    ex.printStackTrace();
-                }
-            }
-        }
-        catch (Exception e) {
-            System.out.println("connection error submit");
-            e.printStackTrace();
-        }
+        querySuccessful = true;
     }
 }
