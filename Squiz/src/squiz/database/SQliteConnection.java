@@ -105,7 +105,6 @@ public class SQliteConnection {
             try {
                 Statement st = connection.createStatement();
                 int result = st.executeUpdate(query);
-
                 querySuccessful = true;
             }
             catch (Exception e) {
@@ -126,8 +125,6 @@ public class SQliteConnection {
         String TABLE = studentLogin ? "STUDENT" : "TEACHER";
 
         String query = "UPDATE "+TABLE+" SET SIGNEDIN = "+SIGNAL+" WHERE USERNAME = '"+username+"'";
-
-//        System.out.println(query);
         Connection connection = connectionCheck();
 
         querySuccessful = false;
@@ -152,14 +149,39 @@ public class SQliteConnection {
         }
     }
 
-    public static void submitTest(ArrayList<Question>testArray)
+    public static void deleteQuery(String query)
+    {
+        Connection connection = connectionCheck();
+
+        querySuccessful = false;
+
+        if (connection != null) {
+            try {
+                Statement st = connection.createStatement();
+                int result = st.executeUpdate(query);
+                querySuccessful = true;
+            }
+            catch (Exception e) {
+                System.out.println("delete error");
+            }
+            finally {
+                try {
+                    connection.close();
+                } catch(SQLException ex) {
+                    System.out.println("Connection Close Error");
+                }
+            }
+        }
+    }
+
+    public static void submitTest(ArrayList<Question>testArray, String subject)
     {
         querySuccessful = false;
 
         TestBuilder test = new TestBuilder();
         int totalQuestions = test.setTestTable(testArray);
 
-        String query = "INSERT INTO TEST (COORDINATOR,QUIZPAPER,QUESTIONS,SUBJECT,OPEN) VALUES ('"+LoginUser.username+"','"+test.getTestTable()+"',"+totalQuestions+",'"+"General Quiz"+"',"+1+")";
+        String query = "INSERT INTO TEST (COORDINATOR,QUIZPAPER,QUESTIONS,SUBJECT,OPEN) VALUES ('"+LoginUser.username+"','"+test.getTestTable()+"',"+totalQuestions+",'"+subject+"',"+1+")";
         insertQuery(query);
 
         querySuccessful = true;

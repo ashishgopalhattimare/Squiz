@@ -104,6 +104,8 @@ public class CreateTestController implements Initializable {
         mcqButton.setOnAction(this::radioSelected);
         tfButton.setOnAction(this::radioSelected);
 
+        subjectField.setText("");
+
         buttonVisibility(false, false, false, false);
         resetChoiceButton();
         resetTextField();
@@ -126,12 +128,15 @@ public class CreateTestController implements Initializable {
 
     private void submitEventHandler(ActionEvent event)
     {
-        if(questionArrayList.size() > 0) {
-            SQliteConnection.submitTest(questionArrayList);
+        if(questionArrayList.size() > 0 && subjectField.getText().length() > 0) {
+            SQliteConnection.submitTest(questionArrayList, subjectField.getText());
 
             if(SQliteConnection.querySuccessful) {
                 teacherLog();
             }
+        }
+        else {
+            System.out.println("subject missing or no question");
         }
     }
 

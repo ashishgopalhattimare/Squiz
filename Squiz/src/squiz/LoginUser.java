@@ -1,8 +1,10 @@
 package squiz;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -12,6 +14,8 @@ public class LoginUser {
     public static String username, firstname, lastname;
     public static boolean accepted;
     public static boolean studentLogin;
+
+    private double xOffset, yOffset;
 
     public static Stage s_window;
 
@@ -23,23 +27,63 @@ public class LoginUser {
         System.out.println(studentLogin);
         accepted = false;
 
+        xOffset = 0;
+        yOffset = 0;
+
         try {
-            Parent view = FXMLLoader.load(getClass().getResource("login.fxml"));
-            Stage window = new Stage();
-            s_window = window;
+            Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
+            Stage primaryStage = new Stage();
+            s_window = primaryStage;
 
-            window.setScene(new Scene(view));
+            root.setOnMousePressed(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    xOffset = event.getSceneX();
+                    yOffset = event.getSceneY();
+                }
+            });
 
-            window.initModality(Modality.APPLICATION_MODAL);
-            window.initStyle(StageStyle.UNDECORATED);
-            window.setResizable(false);
-            window.showAndWait();
+            root.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    primaryStage.setX(event.getScreenX() - xOffset);
+                    primaryStage.setY(event.getScreenY() - yOffset);
+                }
+            });
+
+            primaryStage.setScene(new Scene(root));
+
+            primaryStage.initModality(Modality.APPLICATION_MODAL);
+            primaryStage.initStyle(StageStyle.UNDECORATED);
+            primaryStage.setResizable(false);
+            primaryStage.showAndWait();
 
             if(accepted) {
                 if(!studentAccess) {
+
+                    xOffset = 0;
+                    yOffset = 0;
+
                     try {
                         Parent teacherView = FXMLLoader.load(getClass().getResource("teacherLog.fxml"));
                         Main.mainStage.setScene(new Scene(teacherView));
+
+                        teacherView.setOnMousePressed(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent event) {
+                                xOffset = event.getSceneX();
+                                yOffset = event.getSceneY();
+                            }
+                        });
+
+                        teacherView.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent event) {
+                                Main.mainStage.setX(event.getScreenX() - xOffset);
+                                Main.mainStage.setY(event.getScreenY() - yOffset);
+                            }
+                        });
+
                         Main.mainStage.showAndWait();
                     }
                     catch(Exception e) {}

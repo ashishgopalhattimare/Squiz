@@ -159,7 +159,7 @@ public class LoginController implements Initializable {
                 if(LoginUser.studentLogin) { // Student is Login
                     if(SQliteConnection.userExistLogin("STUDENT", username, password)) {
 
-                        System.out.printf("%s %s\n%s\n\n", SQliteConnection.firstname, SQliteConnection.lastname, SQliteConnection.username);
+                        System.out.printf("%s %s : %s\n\n", SQliteConnection.firstname, SQliteConnection.lastname, SQliteConnection.username);
 
                         login_password.setStyle("-fx-border-color : transparent");
                         login_username.setStyle("-fx-border-color : transparent");

@@ -5,12 +5,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
 
+    @FXML private Button minimizeButton;
     @FXML private Button studentButton;
     @FXML private Button teacherButton;
     @FXML private Button closeButton;
@@ -21,6 +23,7 @@ public class MainController implements Initializable {
         studentButton.setStyle("-fx-background-color:#7aa8f4; -fx-background-radius:45");
         teacherButton.setStyle("-fx-background-color:#7aa8f4; -fx-background-radius:45");
         closeButton.setStyle("-fx-background-radius:45; -fx-background-color:#ffffff; -fx-border-color:#000000; -fx-border-radius:45");
+        minimizeButton.setStyle("-fx-background-radius:45; -fx-background-color:#ffffff; -fx-border-color:#000000; -fx-border-radius:45");
 
         LoginUser loginUser = new LoginUser();
 
@@ -36,6 +39,12 @@ public class MainController implements Initializable {
             System.out.println("Close the Application");
             Platform.exit();
         });
+
+        minimizeButton.setOnAction(event -> {
+//            Stage stage = (Stage)mainAnchor.getScene().getWindow();
+            Stage stage = (Stage)((Button)event.getSource()).getScene().getWindow();
+            stage.setIconified(true);
+        });
     }
 
     public void closeMouseEnter(MouseEvent e) {
@@ -44,6 +53,14 @@ public class MainController implements Initializable {
 
     public void closeMouseExit(MouseEvent e) {
         closeButton.setStyle("-fx-background-radius:45; -fx-background-color:#ffffff; -fx-border-color:#000000; -fx-border-radius:45");
+    }
+
+    public void minimizeMouseEnter(MouseEvent e) {
+        minimizeButton.setStyle("-fx-background-radius:45; -fx-background-color:#000000; -fx-border-color:#000000; -fx-border-radius:45");
+    }
+
+    public void minimizeMouseExit(MouseEvent e) {
+        minimizeButton.setStyle("-fx-background-radius:45; -fx-background-color:#ffffff; -fx-border-color:#000000; -fx-border-radius:45");
     }
 
     public void studentMouseEnter(MouseEvent e) {

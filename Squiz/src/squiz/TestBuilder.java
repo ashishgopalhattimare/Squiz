@@ -26,17 +26,24 @@ public class TestBuilder implements Serializable
             stringBuilder.append(CONTENT_SEPARATOR);
             stringBuilder.append(q.getQuesType());
 
-            for(String s : q.getOptions()) {
+            System.out.println("======================================");
+            System.out.println(q.getQuestion() + "\n");
+            System.out.println("Questions Type : " + q.getQuesType() + "\n");
+
+            System.out.println("Options : ");
+            for(String options : q.getOptions()) {
                 stringBuilder.append(CONTENT_SEPARATOR);
-                stringBuilder.append(s);
+                stringBuilder.append(options);
+                System.out.println(options);
             }
+
+            System.out.println("\nAnswers : ");
             for(int answer : q.getAnswers()) {
                 stringBuilder.append(CONTENT_SEPARATOR);
                 stringBuilder.append(answer);
+                System.out.println(answer);
             }
-
-
-            System.out.println(stringBuilder.toString());
+            System.out.println();
 
             testBuilder.append(stringBuilder.toString());
             testBuilder.append(QUESTION_SEPARATOR);

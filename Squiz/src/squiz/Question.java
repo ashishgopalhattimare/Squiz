@@ -7,8 +7,8 @@ public class Question {
     private String[] options;
     private int[] answers;
 
-    public Question(String question, int quesType, String[] optionAr, int[] answerAr)
-    {
+    public Question(String question, int quesType, String[] optionAr, int[] answerAr) {
+
         constructQuestion(question, quesType, optionAr, answerAr);
     }
 

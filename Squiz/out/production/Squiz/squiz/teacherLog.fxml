@@ -23,10 +23,10 @@
                   </ImageView>
                   <Label fx:id="nameLabel" layoutX="116.0" layoutY="10.0" prefHeight="48.0" prefWidth="433.0" text="Ashish Gopal Hattimare">
                      <font>
-                        <Font size="24.0" />
+                        <Font name="Serif Bold" size="28.0" />
                      </font>
                   </Label>
-                  <Button fx:id="closeButton" layoutX="713.0" layoutY="10.0" mnemonicParsing="false" style="-fx-background-radius: 45;" text="X" />
+                  <Button fx:id="closeButton" layoutX="713.0" layoutY="10.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="27.0" style="-fx-background-radius: 45;" text="X" />
                </children>
             </AnchorPane>
          </top>
@@ -38,8 +38,8 @@
                         <JFXListView fx:id="listView" prefHeight="301.0" prefWidth="432.0" BorderPane.alignment="CENTER" />
                      </center>
                   </BorderPane>
-                  <Button fx:id="addTestButton" layoutX="10.0" layoutY="320.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" style="-fx-background-radius: 45;" text="NEW TEST" />
-                  <Button fx:id="editTestButton" layoutX="290.0" layoutY="320.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" style="-fx-background-radius: 45;" text="EDIT TEST" />
+                  <Button fx:id="addTestButton" layoutX="10.0" layoutY="320.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 45;" text="NEW TEST" />
+                  <Button fx:id="editTestButton" disable="true" layoutX="259.0" layoutY="320.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 45;" text="EDIT TEST" />
                   <AnchorPane layoutX="455.0" layoutY="11.0" prefHeight="300.0" prefWidth="275.0">
                      <children>
                         <Label contentDisplay="CENTER" prefHeight="35.0" prefWidth="110.0" text="QUESTIONS">
@@ -47,27 +47,34 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <Label contentDisplay="CENTER" layoutY="35.0" prefHeight="35.0" prefWidth="110.0" text="SUBJECT">
+                        <Label contentDisplay="CENTER" layoutY="35.0" prefHeight="35.0" prefWidth="110.0" text="DATE">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <Label contentDisplay="CENTER" layoutY="70.0" prefHeight="35.0" prefWidth="110.0" text="DATE">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
-                        <TextField fx:id="questionText" alignment="CENTER" editable="false" layoutX="110.0" layoutY="3.0" prefHeight="30.0" prefWidth="161.0" style="-fx-background-radius: 0;" />
-                        <TextField fx:id="subjectText" alignment="CENTER" editable="false" layoutX="110.0" layoutY="38.0" prefHeight="30.0" prefWidth="161.0" style="-fx-background-radius: 0;" />
-                        <TextField fx:id="dateText" alignment="CENTER" editable="false" layoutX="110.0" layoutY="73.0" prefHeight="30.0" prefWidth="161.0" style="-fx-background-radius: 0;" />
-                        <TextField fx:id="openText" alignment="CENTER" editable="false" layoutX="110.0" layoutY="106.0" prefHeight="30.0" prefWidth="161.0" style="-fx-background-radius: 0;" />
-                        <Label contentDisplay="CENTER" layoutY="103.0" prefHeight="35.0" prefWidth="110.0" text="STATUS">
+                        <TextField fx:id="questionText" editable="false" layoutX="110.0" layoutY="3.0" prefHeight="30.0" prefWidth="161.0" style="-fx-background-radius: 0;" />
+                        <TextField fx:id="dateText" editable="false" layoutX="110.0" layoutY="38.0" prefHeight="30.0" prefWidth="161.0" style="-fx-background-radius: 0;" />
+                        <TextField fx:id="openText" editable="false" layoutX="110.0" layoutY="73.0" prefHeight="30.0" prefWidth="161.0" style="-fx-background-radius: 0;" />
+                        <Label contentDisplay="CENTER" layoutY="70.0" prefHeight="35.0" prefWidth="110.0" text="STATUS">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Label>
                      </children>
                   </AnchorPane>
+                  <Button fx:id="deleteButton" layoutX="150.0" layoutY="320.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" style="-fx-background-radius: 45;" text="DELETE" />
+                  <Button fx:id="refreshButton" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" graphicTextGap="0.0" layoutX="398.0" layoutY="320.0" mnemonicParsing="false" onMouseEntered="#refreshMouseEnter" onMouseExited="#refreshMouseExit" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 45;">
+                     <graphic>
+                        <ImageView fx:id="refreshImage" fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/refresh.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font size="1.0" />
+                     </font>
+                  </Button>
                </children>
             </AnchorPane>
          </center>

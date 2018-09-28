@@ -11,6 +11,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import squiz.database.SQliteConnection;
 
 import java.net.URL;
@@ -22,12 +25,15 @@ import java.util.ResourceBundle;
 
 public class TeacherLogController implements Initializable {
 
-    @FXML private Button addTestButton;
     @FXML private Button editTestButton;
+    @FXML private Button addTestButton;
+    @FXML private Button refreshButton;
+    @FXML private Button deleteButton;
     @FXML private Button closeButton;
 
+    @FXML private ImageView refreshImage;
+
     @FXML private TextField questionText;
-    @FXML private TextField subjectText;
     @FXML private TextField dateText;
     @FXML private TextField openText;
 
@@ -35,7 +41,7 @@ public class TeacherLogController implements Initializable {
 
     @FXML private JFXListView<Label> listView;
 
-    private int totalQuestions;
+    private int totalQuestions, listLength;
     public static int [] testIDArray = new int[1000];
 
     @Override
@@ -69,11 +75,39 @@ public class TeacherLogController implements Initializable {
             }
         });
 
+        refreshButton.setOnAction(event -> {
+            updateTeacherTable();
+        });
+
+        deleteButton.setOnAction(event -> {
+            int index = listView.getSelectionModel().getSelectedIndex();
+
+            if(index != -1) {
+                int id = testIDArray[index];
+
+                String query = "DELETE FROM TEST WHERE ID = " + id;
+                SQliteConnection.deleteQuery(query);
+
+                if(SQliteConnection.querySuccessful) {
+                    listView.getItems().remove(index);
+                }
+
+                listView.getSelectionModel().clearSelection();
+            }
+        });
+
         listView.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number testIndex) {
 
-                getTestContent(testIDArray[(int)testIndex]);
+                if((int)testIndex != -1) {
+                    getTestContent(testIDArray[(int)testIndex]);
+                }
+                else {
+                    questionText.setText("");
+                    dateText.setText("");
+                    openText.setText("");
+                }
             }
         });
 
@@ -93,11 +127,9 @@ public class TeacherLogController implements Initializable {
 
                 if(set.next()) {
                     int questions = set.getInt("QUESTIONS");
-                    String subject = set.getString("SUBJECT");
                     int open = set.getInt("OPEN");
 
                     questionText.setText(Integer.toString(questions));
-                    subjectText.setText(subject);
                     dateText.setText("XX-XX-XXXX");
 
                     if(open == 1) {
@@ -131,7 +163,10 @@ public class TeacherLogController implements Initializable {
                 Statement st = connection.createStatement();
                 ResultSet set = st.executeQuery(query);
 
-                listView.getItems().removeAll();
+                listLength = listView.getItems().size();
+                for(int i = 0; i < listLength; i++) {
+                    listView.getItems().remove(0);
+                }
 
                 totalQuestions = 0;
                 while(set.next()) {
@@ -160,4 +195,10 @@ public class TeacherLogController implements Initializable {
             }
         }
     }
+
+    public void refreshMouseEnter(MouseEvent e)
+    { }
+
+    public void refreshMouseExit(MouseEvent e)
+    { }
 }
