@@ -87,49 +87,72 @@ public class LoginController implements Initializable {
             login_submit.setStyle("-fx-background-color: #7aa8f4;");
         });
 
+        /**
+         * Action Event when new student or new teacher wants to sign up
+         */
         signup_submit.setOnAction(event -> {
 
-            firstname = signup_firstname.getText().trim();
-            lastname = signup_lastname.getText().trim();
+            firstname = signup_firstname.getText().trim().toUpperCase();
+            lastname = signup_lastname.getText().trim().toUpperCase();
             email = signup_email.getText().trim().toLowerCase();
-            username = signup_username.getText().trim();
             password = signup_password.getText().trim();
 
-            dataValidSignUp(firstname, lastname, email, username, password);
+            username = LoginUser.prefix+signup_username.getText().trim().toUpperCase();
 
-            if(dataValidation) {
+            /**
+             * Check if the signup details are correct before adding details to the
+             * REGISTRATION.db database
+             */
+            if(dataValidSignUp(firstname, lastname, email, username, password)) {
 
-                // Student is Signing Up
+                /**
+                 * If the students wants to sign up into the institute
+                 */
                 if(LoginUser.studentLogin) {
-                    if(SQliteConnection.userExistSignUp("STUDENT", username)) {
+
+                    SQliteConnection.DATABASE_PEOPLE = "STUDENT_DATABASE";
+                    SQliteConnection.DATABASE_FOLLOW = "STUDENT_FOLLOW";
+
+                    if(SQliteConnection.userAlreadyExists("STUDENT", username)) {
                         String query = "INSERT INTO STUDENT (FIRSTNAME,LASTNAME,EMAIL,USERNAME,PASWORD,SIGNEDIN) VALUES ('"+firstname+"','"+lastname+"','"+email+"','"+username+"','"+password+"',"+0+")";
 
-                        SQliteConnection.insertQuery(query);
+                        // If the database of STUDENT does not contains username
+                        // add student to REGISTRATION.db > STUDENT TABLE
+                        SQliteConnection.insertQuery(query, "REGISTRATION");
 
                         if(SQliteConnection.querySuccessful) {
                             SQliteConnection.studentLogin = true;
-                            transferDetails();
+                            signUpDetails();
                         }
                         else {
-                            signup_username.setStyle("-fx-border-color : #7aa8f4");
+                            signup_username.setStyle("-fx-border-color : #ff5542");
                             dataValidation = false;
                         }
                     }
                     else {
-                        signup_username.setStyle("-fx-border-color : #7aa8f4");
+                        signup_username.setStyle("-fx-border-color : #ff5542");
                         dataValidation = false;
                     }
                 }
-                // Teacher is Signing up
+
+                /**
+                 * If the teacher wants to sign up into the institute
+                 */
                 else {
-                    if(SQliteConnection.userExistSignUp("TEACHER", username)) {
+
+                    SQliteConnection.DATABASE_PEOPLE = "TEACHER_DATABASE";
+                    SQliteConnection.DATABASE_FOLLOW = "TEACHER_FOLLOW";
+
+                    if(SQliteConnection.userAlreadyExists("TEACHER", username)) {
                         String query = "INSERT INTO TEACHER (FIRSTNAME,LASTNAME,EMAIL,USERNAME,PASWORD,SIGNEDIN) VALUES ('"+firstname+"','"+lastname+"','"+email+"','"+username+"','"+password+"',"+0+")";
 
-                        SQliteConnection.insertQuery(query);
+                        SQliteConnection.insertQuery(query, "REGISTRATION");
 
                         if(SQliteConnection.querySuccessful) {
                             SQliteConnection.studentLogin = false;
-                            transferDetails();
+
+                            SQliteConnection.createTable(username, "TEACHER_TESTS");
+                            signUpDetails();
                         }
                         else {
                             signup_username.setStyle("-fx-border-color : #7aa8f4");
@@ -137,35 +160,39 @@ public class LoginController implements Initializable {
                         }
                     }
                     else {
-                        signup_username.setStyle("-fx-border-color : #7aa8f4");
+                        signup_username.setStyle("-fx-border-color : #ff5542");
                         dataValidation = false;
                     }
                 }
             }
             else {
-                System.out.println("Please fill all the information");
+                System.out.println("sign up details error");
             }
-
         });
 
         login_submit.setOnAction(event -> {
 
-            username = login_username.getText().trim();
+            username = LoginUser.prefix + login_username.getText().trim().toUpperCase();
             password = login_password.getText().trim();
 
-            dataValidLogin(username, password);
-
-            if(dataValidation) {
+            if(dataValidLogin(username, password)) {
                 if(LoginUser.studentLogin) { // Student is Login
-                    if(SQliteConnection.userExistLogin("STUDENT", username, password)) {
 
-                        System.out.printf("%s %s : %s\n\n", SQliteConnection.firstname, SQliteConnection.lastname, SQliteConnection.username);
+                    SQliteConnection.DATABASE_PEOPLE = "STUDENT_DATABASE";
+                    SQliteConnection.DATABASE_FOLLOW = "STUDENT_FOLLOW";
+
+                    if(SQliteConnection.loginUser("STUDENT", username, password)) {
+
+                        System.out.printf("-> %s %s : %s\n", LoginUser.firstname, LoginUser.lastname, LoginUser.username);
 
                         login_password.setStyle("-fx-border-color : transparent");
                         login_username.setStyle("-fx-border-color : transparent");
 
                         SQliteConnection.studentLogin = true;
-                        transferDetails();
+
+                        LoginUser.accepted = true;
+                        SQliteConnection.updateStatusQuery(1);
+                        LoginUser.s_window.close();
                     }
                     else {
                         login_password.setStyle("-fx-border-color : #ff5542");
@@ -173,15 +200,22 @@ public class LoginController implements Initializable {
                     }
                 }
                 else { // Teacher is Signing up
-                    if(SQliteConnection.userExistLogin("TEACHER", username, password)) {
 
-                        System.out.printf("%s %s\n%s\n\n", SQliteConnection.firstname, SQliteConnection.lastname, SQliteConnection.username);
+                    SQliteConnection.DATABASE_PEOPLE = "TEACHER_DATABASE";
+                    SQliteConnection.DATABASE_FOLLOW = "TEACHER_FOLLOW";
+
+                    if(SQliteConnection.loginUser("TEACHER", username, password)) {
+
+                        System.out.printf("-> %s %s : %s\n", LoginUser.firstname, LoginUser.lastname, LoginUser.username);
 
                         login_password.setStyle("-fx-border-color : transparent");
                         login_username.setStyle("-fx-border-color : transparent");
 
                         SQliteConnection.studentLogin = false;
-                        transferDetails();
+
+                        LoginUser.accepted = true;
+                        SQliteConnection.updateStatusQuery(1);
+                        LoginUser.s_window.close();
                     }
                     else {
                         login_password.setStyle("-fx-border-color : #ff5542");
@@ -190,23 +224,26 @@ public class LoginController implements Initializable {
                 }
             }
             else {
-                System.out.println("Please fill all the information");
+                System.out.println("loginuser error");
             }
         });
     }
 
-    private void transferDetails()
+    private void signUpDetails()
     {
         LoginUser.username = username;
         LoginUser.firstname = firstname;
         LoginUser.lastname = lastname;
+
+        System.out.printf("transferDetails : %s %s %s\n", LoginUser.username, LoginUser.firstname, LoginUser.lastname);
+
         LoginUser.accepted = true;
 
-        SQliteConnection.updateQuery(1);
+        SQliteConnection.updateStatusQuery(1);
         LoginUser.s_window.close();
     }
 
-    private void dataValidLogin(String username, String password)
+    private boolean dataValidLogin(String username, String password)
     {
         dataValidation = true;
 
@@ -225,9 +262,11 @@ public class LoginController implements Initializable {
         else {
             login_password.setStyle("-fx-border-color : transparent");
         }
+
+        return dataValidation;
     }
 
-    private void dataValidSignUp(String firstname, String lastname, String email, String username, String password)
+    private boolean dataValidSignUp(String firstname, String lastname, String email, String username, String password)
     {
         dataValidation = true;
 
@@ -270,6 +309,8 @@ public class LoginController implements Initializable {
         else {
             signup_password.setStyle("-fx-border-color : transparent");
         }
+
+        return dataValidation;
     }
 
     private boolean emailValidFormat(String email) {

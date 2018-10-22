@@ -8,10 +8,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import squiz.database.SQliteConnection;
 
 public class LoginUser {
 
-    public static String username, firstname, lastname;
+    public static String firstname, lastname, username;
+    public static final String prefix = "ID_";
+
     public static boolean accepted;
     public static boolean studentLogin;
 
@@ -35,20 +38,14 @@ public class LoginUser {
             Stage primaryStage = new Stage();
             s_window = primaryStage;
 
-            root.setOnMousePressed(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    xOffset = event.getSceneX();
-                    yOffset = event.getSceneY();
-                }
+            root.setOnMousePressed(event -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
             });
 
-            root.setOnMouseDragged(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    primaryStage.setX(event.getScreenX() - xOffset);
-                    primaryStage.setY(event.getScreenY() - yOffset);
-                }
+            root.setOnMouseDragged(event -> {
+                primaryStage.setX(event.getScreenX() - xOffset);
+                primaryStage.setY(event.getScreenY() - yOffset);
             });
 
             primaryStage.setScene(new Scene(root));
@@ -68,27 +65,21 @@ public class LoginUser {
                         Parent teacherView = FXMLLoader.load(getClass().getResource("teacherLog.fxml"));
                         Main.mainStage.setScene(new Scene(teacherView));
 
-                        teacherView.setOnMousePressed(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
-                                xOffset = event.getSceneX();
-                                yOffset = event.getSceneY();
-                            }
+                        teacherView.setOnMousePressed(event -> {
+                            xOffset = event.getSceneX();
+                            yOffset = event.getSceneY();
                         });
 
-                        teacherView.setOnMouseDragged(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
-                                Main.mainStage.setX(event.getScreenX() - xOffset);
-                                Main.mainStage.setY(event.getScreenY() - yOffset);
-                            }
+                        teacherView.setOnMouseDragged(event -> {
+                            Main.mainStage.setX(event.getScreenX() - xOffset);
+                            Main.mainStage.setY(event.getScreenY() - yOffset);
                         });
-
                         Main.mainStage.showAndWait();
                     }
                     catch(Exception e) {}
                 }
                 else {
+
                     System.out.println("STUDENT PAGE");
                 }
             }

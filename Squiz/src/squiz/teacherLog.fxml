@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="500.0" maxWidth="750.0" minHeight="500.0" minWidth="750.0" prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="squiz.TeacherLogController">
+<AnchorPane maxHeight="500.0" maxWidth="750.0" minHeight="500.0" minWidth="750.0" prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="squiz.TeacherLogController">
     <children>
       <BorderPane minHeight="500.0" minWidth="750.0" prefHeight="500.0" prefWidth="750.0">
          <top>
@@ -41,8 +41,8 @@
                         <JFXListView fx:id="listView" prefHeight="301.0" prefWidth="432.0" BorderPane.alignment="CENTER" />
                      </center>
                   </BorderPane>
-                  <Button fx:id="addTestButton" layoutX="10.0" layoutY="320.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 45;" text="NEW TEST" />
-                  <Button fx:id="editTestButton" disable="true" layoutX="259.0" layoutY="320.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 45;" text="EDIT TEST" />
+                  <Button fx:id="addTestButton" layoutX="10.0" layoutY="325.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 45;" text="NEW TEST" />
+                  <Button fx:id="editTestButton" disable="true" layoutX="259.0" layoutY="325.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 45;" text="EDIT TEST" />
                   <AnchorPane layoutX="455.0" layoutY="11.0" prefHeight="126.0" prefWidth="275.0">
                      <children>
                         <Label contentDisplay="CENTER" prefHeight="35.0" prefWidth="110.0" text="QUESTIONS">
@@ -65,8 +65,8 @@
                         </Label>
                      </children>
                   </AnchorPane>
-                  <Button fx:id="deleteButton" layoutX="150.0" layoutY="320.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" style="-fx-background-radius: 45;" text="DELETE" />
-                  <Button fx:id="refreshButton" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" graphicTextGap="0.0" layoutX="398.0" layoutY="320.0" mnemonicParsing="false" onMouseEntered="#refreshMouseEnter" onMouseExited="#refreshMouseExit" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 45;">
+                  <Button fx:id="deleteButton" layoutX="150.0" layoutY="325.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" style="-fx-background-radius: 45;" text="DELETE" />
+                  <Button fx:id="refreshButton" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" graphicTextGap="0.0" layoutX="398.0" layoutY="325.0" mnemonicParsing="false" onMouseEntered="#refreshMouseEnter" onMouseExited="#refreshMouseExit" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 45;">
                      <graphic>
                         <ImageView fx:id="refreshImage" fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -86,6 +86,7 @@
                       <NumberAxis prefHeight="159.0" prefWidth="24.0" side="LEFT" />
                     </yAxis>
                   </BarChart>
+                  <Button fx:id="studentButton" layoutX="447.0" layoutY="325.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" style="-fx-background-radius: 45;" text="STUDENT TABLE" />
                </children>
             </AnchorPane>
          </center>

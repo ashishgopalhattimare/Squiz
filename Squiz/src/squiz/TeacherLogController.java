@@ -3,6 +3,7 @@ package squiz;
 import com.jfoenix.controls.JFXListView;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -11,10 +12,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import squiz.database.SQliteConnection;
+import sun.rmi.runtime.Log;
 
 import java.net.URL;
 import java.sql.Connection;
@@ -30,6 +31,7 @@ public class TeacherLogController implements Initializable {
     @FXML private Button refreshButton;
     @FXML private Button deleteButton;
     @FXML private Button closeButton;
+    @FXML private Button studentButton;
 
     @FXML private ImageView refreshImage;
 
@@ -38,6 +40,8 @@ public class TeacherLogController implements Initializable {
     @FXML private TextField openText;
 
     @FXML private Label nameLabel;
+
+    private double xOffset, yOffset;
 
     @FXML private JFXListView<Label> listView;
 
@@ -55,6 +59,17 @@ public class TeacherLogController implements Initializable {
             try {
                 Parent testView = FXMLLoader.load(getClass().getResource("testLog.fxml"));
                 Main.mainStage.setScene(new Scene(testView));
+
+                testView.setOnMousePressed(event12 -> {
+                    xOffset = event12.getSceneX();
+                    yOffset = event12.getSceneY();
+                });
+
+                testView.setOnMouseDragged(event1 -> {
+                    Main.mainStage.setX(event1.getScreenX() - xOffset);
+                    Main.mainStage.setY(event1.getScreenY() - yOffset);
+                });
+
                 Main.mainStage.show();
             }
             catch(Exception e) {
@@ -66,6 +81,8 @@ public class TeacherLogController implements Initializable {
             try {
                 Parent testView = FXMLLoader.load(getClass().getResource("main.fxml"));
                 Scene testScene = new Scene(testView);
+
+                SQliteConnection.updateStatusQuery(0);
 
                 Main.mainStage.setScene(testScene);
                 Main.mainStage.show();
@@ -85,8 +102,8 @@ public class TeacherLogController implements Initializable {
             if(index != -1) {
                 int id = testIDArray[index];
 
-                String query = "DELETE FROM TEST WHERE ID = " + id;
-                SQliteConnection.deleteQuery(query);
+                String query = "DELETE FROM "+ LoginUser.username +" WHERE ID = " + id;
+                SQliteConnection.deleteQuery(query, "TEACHER_TESTS");
 
                 if(SQliteConnection.querySuccessful) {
                     listView.getItems().remove(index);
@@ -111,15 +128,18 @@ public class TeacherLogController implements Initializable {
             }
         });
 
-        nameLabel.setText(SQliteConnection.firstname + " " + SQliteConnection.lastname);
+        System.out.printf("TeacherLogController : %s %s\n", LoginUser.firstname, LoginUser.lastname);
+        nameLabel.setText(LoginUser.firstname + " " + LoginUser.lastname);
 
         updateTeacherTable();
     }
 
-    private void getTestContent(int id)
+    private void getTestContent(int testid)
     {
-        Connection connection = SQliteConnection.connectionCheck();
-        String query = "SELECT * FROM TEST WHERE ID = '"+id+"'";
+        Connection connection = SQliteConnection.connectionDatabase("TEACHER_TESTS");
+        String query = "SELECT * FROM "+ LoginUser.username +" WHERE ID = '"+testid+"'";
+
+        System.out.println("getTestContent : " + query);
 
         if (connection != null) {
             try {
@@ -141,7 +161,7 @@ public class TeacherLogController implements Initializable {
                 }
             }
             catch (Exception e) {
-                System.out.println("teacher table update error");
+                System.out.println("getTestContent error");
             }
             finally {
                 try {
@@ -155,8 +175,10 @@ public class TeacherLogController implements Initializable {
 
     public void updateTeacherTable()
     {
-        Connection connection = SQliteConnection.connectionCheck();
-        String query = "SELECT * FROM TEST WHERE COORDINATOR = '"+LoginUser.username+"'";
+        Connection connection = SQliteConnection.connectionDatabase("TEACHER_TESTS");
+        String query = "SELECT * FROM "+ LoginUser.username;
+
+        System.out.println("updateTeacherTable : " + query);
 
         if (connection != null) {
             try {
@@ -184,7 +206,7 @@ public class TeacherLogController implements Initializable {
                 }
             }
             catch (Exception e) {
-                System.out.println("teacher table update error");
+                System.out.println("updateTeacherTable error");
             }
             finally {
                 try {

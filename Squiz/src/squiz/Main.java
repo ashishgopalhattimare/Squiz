@@ -16,6 +16,7 @@ public class Main extends Application {
 
         mainStage = primaryStage;
         try {
+
             Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
             primaryStage.setScene(new Scene(root));
             primaryStage.initStyle(StageStyle.UNDECORATED);
@@ -28,9 +29,7 @@ public class Main extends Application {
         }
     }
 
-
     public static void main(String[] args) {
-
         launch(args);
     }
 }

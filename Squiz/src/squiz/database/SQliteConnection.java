@@ -9,27 +9,28 @@ import java.util.ArrayList;
 
 public class SQliteConnection {
 
-    public static String firstname, lastname;
-    public static String username;
+    public static String DATABASE_PEOPLE = "#";
+    public static String DATABASE_FOLLOW = "#";
+
     public static Boolean studentLogin;
 
     public static boolean querySuccessful;
 
-    public static Connection connectionCheck() {
+    public static Connection connectionDatabase(String database) {
         try {
             Class.forName("org.sqlite.JDBC");
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:TEACHER_DATABASE.db");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:"+ database +".db");
             return connection;
         }
         catch (Exception e) {
-            System.out.println("TEACHER_DATABASE ERROR");
+            System.out.println(database +" ERROR");
             return null;
         }
     }
 
-    public static boolean userExistSignUp(String TABLE, String USERNAME)
+    public static boolean userAlreadyExists(String TABLE, String USERNAME)
     {
-        Connection connection = connectionCheck();
+        Connection connection = connectionDatabase("REGISTRATION");
 
         String query = "SELECT * FROM "+ TABLE +" WHERE USERNAME = '"+USERNAME+"'";
 
@@ -59,22 +60,22 @@ public class SQliteConnection {
         return false;
     }
 
-    public static boolean userExistLogin(String TABLE, String USERNAME, String PASSWORD)
+    public static boolean loginUser(String TABLE, String USERNAME, String PASSWORD)
     {
-        Connection connection = connectionCheck();
+        Connection connection = connectionDatabase("REGISTRATION");
 
         String query = "SELECT * FROM "+ TABLE +" WHERE USERNAME = '"+USERNAME+"' AND PASWORD = '"+PASSWORD+"'";
 
         if (connection != null) {
             try {
                 Statement st = connection.createStatement();
-                ResultSet set = st.executeQuery(query);
+                ResultSet resultset = st.executeQuery(query);
 
                 // atleast one query has come from the database
-                if(set.next()) {
-                    firstname = set.getString("FIRSTNAME");
-                    lastname = set.getString("LASTNAME");
-                    username = set.getString("USERNAME");
+                if(resultset.next()) {
+                    LoginUser.firstname = resultset.getString("FIRSTNAME");
+                    LoginUser.lastname = resultset.getString("LASTNAME");
+                    LoginUser.username = resultset.getString("USERNAME");
 
                     connection.close();
                     return true;
@@ -95,9 +96,33 @@ public class SQliteConnection {
         return false;
     }
 
-    public static void insertQuery(String query)
+    public static void createTable(String TABLE, String database)
     {
-        Connection connection = connectionCheck();
+        Connection connection = connectionDatabase(database);
+
+        String query = "CREATE TABLE IF NOT EXISTS " + TABLE + " (ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, COORDINATOR TEXT NOT NULL, QUIZPAPER TEXT NOT NULL, QUESTIONS INTEGER, SUBJECT TEXT NOT NULL, OPEN INTEGER NOT NULL);";
+
+        if(connection != null) {
+            try {
+                Statement st = connection.createStatement();
+                st.execute(query);
+            }
+            catch(Exception e) {
+                System.out.println("create new table error");
+            }
+            finally {
+                try {
+                    connection.close();
+                } catch(SQLException ex) {
+                    System.out.println("Connection Close Error");
+                }
+            }
+        }
+    }
+
+    public static void insertQuery(String query, String database)
+    {
+        Connection connection = connectionDatabase(database);
 
         querySuccessful = false;
 
@@ -120,12 +145,19 @@ public class SQliteConnection {
         }
     }
 
-    public static void updateQuery(int SIGNAL)
+    /**
+     * Method Name : updateStatusQuery
+     * Purpose : Update the status online of the current teacher or student
+     * @param SIGNAL
+     */
+    public static void updateStatusQuery(int SIGNAL)
     {
         String TABLE = studentLogin ? "STUDENT" : "TEACHER";
 
-        String query = "UPDATE "+TABLE+" SET SIGNEDIN = "+SIGNAL+" WHERE USERNAME = '"+username+"'";
-        Connection connection = connectionCheck();
+        System.out.println(LoginUser.username);
+
+        String query = "UPDATE "+TABLE+" SET SIGNEDIN = "+SIGNAL+" WHERE USERNAME = '"+LoginUser.username+"'";
+        Connection connection = connectionDatabase("REGISTRATION");
 
         querySuccessful = false;
 
@@ -149,9 +181,9 @@ public class SQliteConnection {
         }
     }
 
-    public static void deleteQuery(String query)
+    public static void deleteQuery(String query, String database)
     {
-        Connection connection = connectionCheck();
+        Connection connection = connectionDatabase(database);
 
         querySuccessful = false;
 
@@ -181,9 +213,10 @@ public class SQliteConnection {
         TestBuilder test = new TestBuilder();
         int totalQuestions = test.setTestTable(testArray);
 
-        String query = "INSERT INTO TEST (COORDINATOR,QUIZPAPER,QUESTIONS,SUBJECT,OPEN) VALUES ('"+LoginUser.username+"','"+test.getTestTable()+"',"+totalQuestions+",'"+subject+"',"+1+")";
-        insertQuery(query);
+        String query = "INSERT INTO " + LoginUser.username +" (COORDINATOR,QUIZPAPER,QUESTIONS,SUBJECT,OPEN) VALUES ('"+LoginUser.username+"','"+test.getTestTable()+"',"+totalQuestions+",'"+subject+"',"+1+")";
 
+        System.out.println("submitTest : " + query);
+        insertQuery(query, "TEACHER_TESTS");
         querySuccessful = true;
     }
 }
