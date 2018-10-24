@@ -42,7 +42,7 @@
                      </center>
                   </BorderPane>
                   <Button fx:id="addTestButton" layoutX="10.0" layoutY="325.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 45;" text="NEW TEST" />
-                  <Button fx:id="editTestButton" disable="true" layoutX="259.0" layoutY="325.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 45;" text="EDIT TEST" />
+                  <Button fx:id="editTestButton" layoutX="259.0" layoutY="325.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="130.0" style="-fx-background-radius: 45;" text="EDIT TEST" />
                   <AnchorPane layoutX="455.0" layoutY="11.0" prefHeight="126.0" prefWidth="275.0">
                      <children>
                         <Label contentDisplay="CENTER" prefHeight="35.0" prefWidth="110.0" text="QUESTIONS">

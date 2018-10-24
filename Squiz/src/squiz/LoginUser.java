@@ -9,6 +9,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import squiz.database.SQliteConnection;
+import squiz.test.CreateTestController;
 
 public class LoginUser {
 
@@ -27,7 +28,7 @@ public class LoginUser {
         username = ""; firstname = ""; lastname = "";
         studentLogin = studentAccess;
 
-        System.out.println(studentLogin);
+//        System.out.println(studentLogin);
         accepted = false;
 
         xOffset = 0;
@@ -74,6 +75,8 @@ public class LoginUser {
                             Main.mainStage.setX(event.getScreenX() - xOffset);
                             Main.mainStage.setY(event.getScreenY() - yOffset);
                         });
+
+                        Main.mainStage.centerOnScreen();
                         Main.mainStage.showAndWait();
                     }
                     catch(Exception e) {}

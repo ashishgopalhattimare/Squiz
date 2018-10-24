@@ -15,11 +15,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.FlowPane;
+import squiz.LoginUser;
 import squiz.Main;
 import squiz.Question;
+import squiz.TestBuilder;
 import squiz.database.SQliteConnection;
 
 import java.net.URL;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -37,6 +40,7 @@ public class CreateTestController implements Initializable {
     @FXML private Label numberLabel;
 
     @FXML private JFXTextArea questionArea;
+    @FXML private JFXTextField testidField;
     @FXML private TextField subjectField;
 
     @FXML private JFXRadioButton smcqButton;
@@ -55,6 +59,9 @@ public class CreateTestController implements Initializable {
 
     private int currentQuestion;
     private int preType,curType;
+
+    public static boolean updateTest = false;
+    public static int updateTestID;
 
     public ArrayList<Question>questionArrayList;
     public ArrayList<Label>questionLabelList;
@@ -105,11 +112,63 @@ public class CreateTestController implements Initializable {
         tfButton.setOnAction(this::radioSelected);
 
         subjectField.setText("");
-
+        questionArea.setText("");
         buttonVisibility(false, false, false, false);
         resetChoiceButton();
         resetTextField();
+    }
 
+    public void setSubjectField(String subject) {
+        subjectField.setText(subject);
+    }
+
+    public void fillTestPaper(int testid) {
+
+        String query = "SELECT * FROM " + LoginUser.username + " WHERE ID="+testid;
+
+        String quizpaper = SQliteConnection.getQuery(query, "TEACHER_TESTS");
+
+        if(quizpaper == null || quizpaper.length() == 0) {
+            System.out.println("fillTestPaper error");
+            return;
+        }
+
+        String[] questionSet = quizpaper.split(""+TestBuilder.QUESTION_SEPARATOR);
+
+        for(int curQuestion = 0; curQuestion < questionSet.length; curQuestion++) {
+
+            String[] quesPattern = questionSet[curQuestion].split(""+TestBuilder.CONTENT_SEPARATOR);
+
+            String question = quesPattern[0];
+            int quesType = Integer.parseInt(quesPattern[1]);
+
+            int index = 2;
+            if (quesType == 1 || quesType == 3) {
+                optionArray = new String[4];
+
+                for (int i = 0; i < 4; i++) {
+                    optionArray[i] = quesPattern[index++];
+                }
+            }
+            else {
+                optionArray = new String[2];
+
+                for (int i = 0; i < 2; i++) {
+                    optionArray[i] = quesPattern[index++];
+                }
+            }
+
+            answerArray = new int[quesPattern.length-index];
+            for(int i = index, j = 0; i < quesPattern.length; i++, j++) {
+                answerArray[j] = Integer.parseInt(quesPattern[i]);
+            }
+
+            questionArrayList.add(new Question(question, quesType, optionArray, answerArray));
+            setQuestionLabel(curQuestion+1);
+        }
+
+        updateTestID = testid;
+        displayQuestion(0);
     }
 
     private void teacherLog()
@@ -119,6 +178,7 @@ public class CreateTestController implements Initializable {
             Scene testScene = new Scene(testView);
 
             Main.mainStage.setScene(testScene);
+            Main.mainStage.centerOnScreen();
             Main.mainStage.show();
         }
         catch(Exception e) {
@@ -129,9 +189,11 @@ public class CreateTestController implements Initializable {
     private void submitEventHandler(ActionEvent event)
     {
         if(questionArrayList.size() > 0 && subjectField.getText().length() > 0) {
+
             SQliteConnection.submitTest(questionArrayList, subjectField.getText());
 
             if(SQliteConnection.querySuccessful) {
+                updateTest = false;
                 teacherLog();
             }
         }
@@ -155,6 +217,19 @@ public class CreateTestController implements Initializable {
             for (int i = 0; i < questionLabelList.size(); i++) {
                 questionLabelList.get(i).setText("Question " + (i+1));
             }
+
+            questionList.getSelectionModel().clearSelection();
+            if(questionArrayList.size() == 0) {
+                currentQuestion = 1;
+
+                questionArea.setText("");
+                buttonVisibility(false, false, false, false);
+                resetChoiceButton();
+                resetTextField();
+            }
+            else {
+                displayQuestion(questionArrayList.size()-1);
+            }
         }
     }
 
@@ -171,7 +246,6 @@ public class CreateTestController implements Initializable {
             }
 
             if(selectedOptions == 0) {
-                System.out.println(0);
                 return false;
             }
 
@@ -221,7 +295,7 @@ public class CreateTestController implements Initializable {
 
     private void resetTextField()
     {
-        for(int i = 0; i < 4; i++) {
+        for(int i = 0; i != 4; i++) {
             JFXTextArray[i].setText("");
         }
     }
@@ -271,52 +345,70 @@ public class CreateTestController implements Initializable {
             int index = questionList.getSelectionModel().getSelectedIndex();
 
             if (index != -1) {
-                buttonVisibility(false, false, false, false);
-                resetChoiceButton();
-                resetTextField();
-
-                Question quesTemp = questionArrayList.get(index);
-
-                currentQuestion = index + 1;
-                numberLabel.setText(Integer.toString(currentQuestion));
-
-                questionArea.setText(quesTemp.getQuestion());
-
-                for (int i = 0; i < 2; i++) {
-                    JFXTextArray[i].setText(quesTemp.getOptionContent(i));
-                    JFXTextArray[i].setVisible(true);
-                    JFXOptionArray[i].setVisible(true);
-                }
-
-                if (quesTemp.getQuesType() == 1 || quesTemp.getQuesType() == 3) {
-                    for (int i = 2; i < 4; i++) {
-                        JFXTextArray[i].setText(quesTemp.getOptionContent(i));
-                        JFXTextArray[i].setVisible(true);
-                        JFXOptionArray[i].setVisible(true);
-                    }
-                }
-
-                for (int i : quesTemp.getAnswers()) {
-                    JFXOptionArray[i - 1].setSelected(true);
-                }
-
-                switch (quesTemp.getQuesType()) {
-                    case 1:
-                        smcqButton.setSelected(true);
-                        break;
-                    case 2:
-                        tfButton.setSelected(true);
-                        break;
-                    case 3:
-                        mcqButton.setSelected(true);
-                }
-
-                questionList.getSelectionModel().clearSelection();
+                displayQuestion(index);
             }
         }
         catch (Exception e) {
             System.out.println("Question Access Error");
         }
+    }
+
+    private void displayQuestion(int index)
+    {
+        buttonVisibility(false, false, false, false);
+        resetChoiceButton();
+        resetTextField();
+
+        Question quesTemp = questionArrayList.get(index);
+
+        currentQuestion = index + 1;
+        numberLabel.setText(Integer.toString(currentQuestion));
+
+        questionArea.setText(quesTemp.getQuestion());
+
+        for (int i = 0; i < 2; i++) {
+            JFXTextArray[i].setText(quesTemp.getOptionContent(i));
+            JFXTextArray[i].setVisible(true);
+            JFXOptionArray[i].setVisible(true);
+        }
+
+        if (quesTemp.getQuesType() == 1 || quesTemp.getQuesType() == 3) {
+            for (int i = 2; i < 4; i++) {
+                JFXTextArray[i].setText(quesTemp.getOptionContent(i));
+                JFXTextArray[i].setVisible(true);
+                JFXOptionArray[i].setVisible(true);
+            }
+        }
+
+        for (int i : quesTemp.getAnswers()) {
+            JFXOptionArray[i - 1].setSelected(true);
+        }
+
+        switch (quesTemp.getQuesType()) {
+            case 1:
+                smcqButton.setSelected(true);
+                break;
+            case 2:
+                tfButton.setSelected(true);
+                break;
+            case 3:
+                mcqButton.setSelected(true);
+        }
+
+        questionList.getSelectionModel().clearSelection();
+    }
+
+    private void setQuestionLabel(int currentQuestion)
+    {
+        FlowPane panel = new FlowPane();
+        panel.setAlignment(Pos.CENTER);
+        panel.setMaxWidth(170);
+
+        Label questionLabel = new Label("Question " + currentQuestion);
+        panel.getChildren().add(questionLabel);
+
+        questionLabelList.add(questionLabel);
+        questionList.getItems().add(panel);
     }
 
     private void newModifyQuestion(ActionEvent event)
@@ -360,15 +452,7 @@ public class CreateTestController implements Initializable {
 
                 numberLabel.setText(Integer.toString(currentQuestion));
 
-                FlowPane panel = new FlowPane();
-                panel.setAlignment(Pos.CENTER);
-                panel.setMaxWidth(170);
-
-                Label questionLabel = new Label("Question " + currentQuestion);
-                panel.getChildren().add(questionLabel);
-
-                questionLabelList.add(questionLabel);
-                questionList.getItems().add(panel);
+                setQuestionLabel(currentQuestion);
 
                 currentQuestion = questionArrayList.size() + 1;
             }

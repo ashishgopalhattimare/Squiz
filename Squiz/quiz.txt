@@ -1,0 +1,50 @@
+void fun1(struct node* head)
+{
+    if(head == NULL)
+        return;
+    fun1(head->next);
+    printf("%d  ", head->data);
+}`1`Prints all nodes of linked list`Prints all nodes of linked list in reverse order`Prints alternate nodes of linked list`Prints alternate nodes in reverse order`2~Which of the following points is/are true about Linked List data structure when it is compared with array`1`Arrays have better cache locality that can make them better in terms of performance.`It is easy to insert and delete elements in Linked List`Random access is not allowed in a typical implementation of Linked Lists`All of the above`4~Consider the following function that takes reference to head of a Doubly Linked List as parameter. Assume that a node of doubly linked list has previous pointer as prev and next pointer as next.
+void fun(struct node **head_ref)
+{
+    struct node *temp = NULL;
+    struct node *current = *head_ref;
+ 
+    while (current !=  NULL)
+    {
+        temp = current->prev;
+        current->prev = current->next;
+        current->next = temp;
+        current = current->prev;
+    }
+ 
+    if(temp != NULL )
+        *head_ref = temp->prev;
+}
+
+Assume that reference of head of following doubly linked list is passed to above function 1 <--> 2 <--> 3 <--> 4 <--> 5 <-->6. What should be the modified linked list after the function call?`1`2 <--> 1 <--> 4 <--> 3 <--> 6 <-->5`5 <--> 4 <--> 3 <--> 2 <--> 1 <-->6.`6 <--> 5 <--> 4 <--> 3 <--> 2 <--> 1.`6 <--> 5 <--> 4 <--> 3 <--> 1 <--> 2`3~Which of the following sorting algorithms can be used to sort a random linked list with minimum time complexity?`1`Insertion Sort`Quick Sort`Heap Sort`Merge Sort`4~The following function reverse() is supposed to reverse a singly linked list. There is one line missing at the end of the function.
+
+/* Link list node */
+struct node
+{
+    int data;
+    struct node* next;
+};
+ 
+/* head_ref is a double pointer which points to head (or start) pointer of linked list */
+static void reverse(struct node** head_ref)
+{
+    struct node* prev   = NULL;
+    struct node* current = *head_ref;
+    struct node* next;
+    while (current != NULL)
+    {
+        next  = current->next;  
+        current->next = prev;   
+        prev = current;
+        current = next;
+    }
+    /*ADD A STATEMENT HERE*/
+}
+
+What should be added in place of "/*ADD A STATEMENT HERE*/", so that the function correctly reverses a linked list.`1`*head_ref = prev;`*head_ref = current;`*head_ref = next;`*head_ref = NULL;`1

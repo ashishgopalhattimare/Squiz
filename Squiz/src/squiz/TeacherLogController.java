@@ -15,6 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import squiz.database.SQliteConnection;
+import squiz.test.CreateTestController;
 import sun.rmi.runtime.Log;
 
 import java.net.URL;
@@ -51,12 +52,61 @@ public class TeacherLogController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        /**
+         * Edit Already existing test
+         */
         editTestButton.setOnAction(event -> {
-            System.out.println("open this test");
+
+            int index = listView.getSelectionModel().getSelectedIndex();
+            listView.getSelectionModel().clearSelection();
+
+            if (index != -1) {
+                int testid = testIDArray[index];
+
+                try {
+                    xOffset = 0;
+                    yOffset = 0;
+
+                    FXMLLoader loader = new FXMLLoader();
+                    Parent testView = loader.load(getClass().getResource("testLog.fxml").openStream());
+
+                    CreateTestController createTestController = loader.getController();
+                    createTestController.setSubjectField(listView.getItems().get(index).getText());
+
+                    testView.setOnMousePressed(event12 -> {
+                        xOffset = event12.getSceneX();
+                        yOffset = event12.getSceneY();
+                    });
+
+                    testView.setOnMouseDragged(event1 -> {
+                        Main.mainStage.setX(event1.getScreenX() - xOffset);
+                        Main.mainStage.setY(event1.getScreenY() - yOffset);
+                    });
+
+                    CreateTestController.updateTest = true;
+
+                    Main.mainStage.setScene(new Scene(testView));
+
+                    Main.mainStage.centerOnScreen();
+                    Main.mainStage.show();
+
+                    createTestController.fillTestPaper(testid);
+                }
+                catch(Exception e) {
+                    CreateTestController.updateTest = false;
+                    System.out.println("editTestButton fail");
+                }
+            }
+            else {
+                System.out.println("test to be editted not selected");
+            }
         });
 
         addTestButton.setOnAction(event -> {
             try {
+                xOffset = 0;
+                yOffset = 0;
+
                 Parent testView = FXMLLoader.load(getClass().getResource("testLog.fxml"));
                 Main.mainStage.setScene(new Scene(testView));
 
@@ -70,21 +120,36 @@ public class TeacherLogController implements Initializable {
                     Main.mainStage.setY(event1.getScreenY() - yOffset);
                 });
 
+                Main.mainStage.centerOnScreen();
                 Main.mainStage.show();
             }
             catch(Exception e) {
-                System.out.println("FAILED 2 ADD NEW TEST 2 TEACHER TABLE");
+                System.out.println("addTestButton fail");
             }
         });
 
         closeButton.setOnAction(event -> {
             try {
+                xOffset = 0;
+                yOffset = 0;
+
                 Parent testView = FXMLLoader.load(getClass().getResource("main.fxml"));
                 Scene testScene = new Scene(testView);
+
+                testView.setOnMousePressed(event12 -> {
+                    xOffset = event12.getSceneX();
+                    yOffset = event12.getSceneY();
+                });
+
+                testView.setOnMouseDragged(event1 -> {
+                    Main.mainStage.setX(event1.getScreenX() - xOffset);
+                    Main.mainStage.setY(event1.getScreenY() - yOffset);
+                });
 
                 SQliteConnection.updateStatusQuery(0);
 
                 Main.mainStage.setScene(testScene);
+                Main.mainStage.centerOnScreen();
                 Main.mainStage.show();
             }
             catch(Exception e) {
@@ -108,7 +173,6 @@ public class TeacherLogController implements Initializable {
                 if(SQliteConnection.querySuccessful) {
                     listView.getItems().remove(index);
                 }
-
                 listView.getSelectionModel().clearSelection();
             }
         });
@@ -139,7 +203,7 @@ public class TeacherLogController implements Initializable {
         Connection connection = SQliteConnection.connectionDatabase("TEACHER_TESTS");
         String query = "SELECT * FROM "+ LoginUser.username +" WHERE ID = '"+testid+"'";
 
-        System.out.println("getTestContent : " + query);
+//        System.out.println("getTestContent : " + query);
 
         if (connection != null) {
             try {
@@ -178,7 +242,7 @@ public class TeacherLogController implements Initializable {
         Connection connection = SQliteConnection.connectionDatabase("TEACHER_TESTS");
         String query = "SELECT * FROM "+ LoginUser.username;
 
-        System.out.println("updateTeacherTable : " + query);
+//        System.out.println("updateTeacherTable : " + query);
 
         if (connection != null) {
             try {

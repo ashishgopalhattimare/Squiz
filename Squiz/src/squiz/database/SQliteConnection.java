@@ -3,6 +3,7 @@ package squiz.database;
 import squiz.LoginUser;
 import squiz.Question;
 import squiz.TestBuilder;
+import squiz.test.CreateTestController;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -154,10 +155,34 @@ public class SQliteConnection {
     {
         String TABLE = studentLogin ? "STUDENT" : "TEACHER";
 
-        System.out.println(LoginUser.username);
-
         String query = "UPDATE "+TABLE+" SET SIGNEDIN = "+SIGNAL+" WHERE USERNAME = '"+LoginUser.username+"'";
         Connection connection = connectionDatabase("REGISTRATION");
+
+        querySuccessful = false;
+
+        if (connection != null) {
+            try {
+                Statement st = connection.createStatement();
+                int result = st.executeUpdate(query);
+
+                querySuccessful = true;
+            }
+            catch (Exception e) {
+                System.out.println("update error");
+            }
+            finally {
+                try {
+                    connection.close();
+                } catch(SQLException ex) {
+                    System.out.println("Connection Close Error");
+                }
+            }
+        }
+    }
+
+    public static void updateQuery(String query, String database)
+    {
+        Connection connection = connectionDatabase(database);
 
         querySuccessful = false;
 
@@ -206,6 +231,34 @@ public class SQliteConnection {
         }
     }
 
+    public static String getQuery(String query, String database)
+    {
+        Connection connection = connectionDatabase(database);
+
+        if(connection != null) {
+            try {
+                Statement st = connection.createStatement();
+                ResultSet resultset = st.executeQuery(query);
+
+                if(resultset.next()) {
+                    return resultset.getString("QUIZPAPER");
+                }
+            }
+            catch(Exception e) {
+                System.out.println("getQuery error");
+                return null;
+            }
+            finally {
+                try {
+                    connection.close();
+                } catch(SQLException ex) {
+                    System.out.println("Connection Close Error");
+                }
+            }
+        }
+        return null;
+    }
+
     public static void submitTest(ArrayList<Question>testArray, String subject)
     {
         querySuccessful = false;
@@ -213,10 +266,18 @@ public class SQliteConnection {
         TestBuilder test = new TestBuilder();
         int totalQuestions = test.setTestTable(testArray);
 
-        String query = "INSERT INTO " + LoginUser.username +" (COORDINATOR,QUIZPAPER,QUESTIONS,SUBJECT,OPEN) VALUES ('"+LoginUser.username+"','"+test.getTestTable()+"',"+totalQuestions+",'"+subject+"',"+1+")";
+        // Test update query
+        if(CreateTestController.updateTest) {
+            String query = "UPDATE "+LoginUser.username+" SET COORDINATOR='"+LoginUser.username+"', QUIZPAPER='"+test.getTestTable()+"', QUESTIONS='"+totalQuestions+"', SUBJECT='"+subject+"', OPEN='"+1+"' WHERE ID='"+CreateTestController.updateTestID+"'";
+//            System.out.println("submitTest : " + query);
+            updateQuery(query, "TEACHER_TESTS");
+        }
+        else {
+            String query = "INSERT INTO " + LoginUser.username +" (COORDINATOR,QUIZPAPER,QUESTIONS,SUBJECT,OPEN) VALUES ('"+LoginUser.username+"','"+test.getTestTable()+"',"+totalQuestions+",'"+subject+"',"+1+")";
 
-        System.out.println("submitTest : " + query);
-        insertQuery(query, "TEACHER_TESTS");
+//            System.out.println("submitTest : " + query);
+            insertQuery(query, "TEACHER_TESTS");
+        }
         querySuccessful = true;
     }
 }
